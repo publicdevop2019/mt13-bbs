@@ -1,12 +1,13 @@
-package com.hw.aggregate.post.model;
+package com.hw.aggregate.comment.model;
 
 import com.hw.shared.BadRequestException;
 
-public enum  SortCriteriaEnum {
-    ID("id");
+public enum CommentSortCriteriaEnum {
+    ID("id"),
+    Date("date");
     private String sortCriteria;
 
-    SortCriteriaEnum(String sortCriteria) {
+    CommentSortCriteriaEnum(String sortCriteria) {
         this.sortCriteria = sortCriteria;
     }
 
@@ -14,8 +15,8 @@ public enum  SortCriteriaEnum {
         return this.sortCriteria;
     }
 
-    public static SortCriteriaEnum fromString(String text) {
-        for (SortCriteriaEnum b : SortCriteriaEnum.values()) {
+    public static CommentSortCriteriaEnum fromString(String text) {
+        for (CommentSortCriteriaEnum b : CommentSortCriteriaEnum.values()) {
             if (b.sortCriteria.equalsIgnoreCase(text)) {
                 return b;
             }

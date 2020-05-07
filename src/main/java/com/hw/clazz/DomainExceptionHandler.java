@@ -1,7 +1,12 @@
 package com.hw.clazz;
 
 import com.hw.aggregate.comment.exception.CommentAccessException;
-import com.hw.aggregate.post.exception.*;
+import com.hw.aggregate.comment.exception.CommentNotFoundException;
+import com.hw.aggregate.comment.exception.CommentPostMismatchException;
+import com.hw.aggregate.comment.exception.CommentUnsupportedSortOrderException;
+import com.hw.aggregate.post.exception.PostAccessException;
+import com.hw.aggregate.post.exception.PostNotFoundException;
+import com.hw.aggregate.post.exception.PostUnsupportedSortOrderException;
 import com.hw.shared.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -21,7 +26,9 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(value = {
             CommentNotFoundException.class,
             PostNotFoundException.class,
-            UnsupportedSortOrderException.class
+            PostUnsupportedSortOrderException.class,
+            CommentUnsupportedSortOrderException.class,
+            CommentPostMismatchException.class
     })
     protected ResponseEntity<?> handle400Exception(RuntimeException ex, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(ex);
@@ -31,7 +38,6 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(value = {
-            MultiCommentFoundException.class
     })
     protected ResponseEntity<?> handle500Exception(RuntimeException ex, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(ex);

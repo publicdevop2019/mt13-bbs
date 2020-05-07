@@ -1,4 +1,4 @@
-package com.hw.aggregate.post.exception;
+package com.hw.aggregate.comment.exception;
 
 public class CommentNotFoundException extends RuntimeException {
 }

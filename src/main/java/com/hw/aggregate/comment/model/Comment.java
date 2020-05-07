@@ -1,36 +1,32 @@
 package com.hw.aggregate.comment.model;
 
-import com.hw.aggregate.comment.command.CreateCommentCommand;
+import com.hw.shared.Auditable;
 import lombok.Data;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table
 @SequenceGenerator(name = "commentId_gen", sequenceName = "commentId_gen", initialValue = 100)
 @Data
-public class Comment {
+public class Comment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "commentId_gen")
     private Long id;
     @Column
-    private Date publishedAt;
-    @Column
-    private String publishedBy;
-    @Column
     private String content;
     @Column
     private String replyTo;
+    @Column
+    private Long postId;
 
-    public static Comment create(CreateCommentCommand command) {
-        return new Comment(command.getPublishedBy(), command.getContent(), command.getReplyTo());
+    public static Comment create(String content, String replyTo, String postId) {
+        return new Comment(content, replyTo, Long.parseLong(postId));
     }
 
-    private Comment(String publishedBy, String content, String replyTo) {
-        this.publishedAt = new Date();
-        this.publishedBy = publishedBy;
+    private Comment(String content, String replyTo, Long postId) {
         this.content = content;
         this.replyTo = replyTo;
+        this.postId = postId;
     }
 }

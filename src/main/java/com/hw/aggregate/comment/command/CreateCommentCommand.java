@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class CreateCommentCommand {
-    private String publishedBy;
     private String content;
     private String replyTo;
 }

@@ -1,11 +1,9 @@
 package com.hw.aggregate.post.representation;
 
-import com.hw.aggregate.post.model.Comment;
 import com.hw.aggregate.post.model.Post;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 public class PostDetailRepresentation {
@@ -15,7 +13,6 @@ public class PostDetailRepresentation {
     private Date publishedAt;
     private String publisherId;
     private String content;
-    private List<Comment> commentList;
 
     public PostDetailRepresentation(Post post) {
         this.id = post.getId();
@@ -24,6 +21,5 @@ public class PostDetailRepresentation {
         this.publishedAt = post.getPublishAt();
         this.publisherId = post.getCreatedBy();
         this.content = post.getContent();
-        this.commentList = post.getCommentList();
     }
 }

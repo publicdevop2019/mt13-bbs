@@ -27,8 +27,8 @@ public class Post extends Auditable {
     @Column
     private String content;
 
-    @Column(length = 100000)
-    private ArrayList<Comment> commentList;
+//    @Column(length = 100000)
+//    private ArrayList<Comment> commentList;
     @Version
     private Integer version;
 
@@ -41,6 +41,6 @@ public class Post extends Auditable {
         this.topic = topic;
         this.publishAt = new Date();
         this.content = content;
-        this.commentList = new ArrayList<>();
+//        this.commentList = new ArrayList<>();
     }
 }
