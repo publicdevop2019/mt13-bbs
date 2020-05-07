@@ -2,6 +2,7 @@ package com.hw.aggregate.comment.model;
 
 import com.hw.shared.Auditable;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 @Table
 @SequenceGenerator(name = "commentId_gen", sequenceName = "commentId_gen", initialValue = 100)
 @Data
+@NoArgsConstructor
 public class Comment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "commentId_gen")

@@ -44,9 +44,9 @@ public class CommentController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("private/posts/{postId}/comments/{commentId}")
-    public ResponseEntity<?> deleteCommentFromPost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId, @PathVariable(name = "commentId") String commentId) {
-        commentApplicationService.deleteCommentFromPost(new DeleteCommentCommand(ServiceUtility.getUserId(authorization), postId, commentId));
+    @DeleteMapping("private/comments/{commentId}")
+    public ResponseEntity<?> deleteCommentFromPost(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
+        commentApplicationService.deleteComment(new DeleteCommentCommand(ServiceUtility.getUserId(authorization), commentId));
         return ResponseEntity.ok().build();
     }
 }

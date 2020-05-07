@@ -4,7 +4,6 @@ import com.hw.aggregate.comment.command.CreateCommentCommand;
 import com.hw.aggregate.comment.command.DeleteCommentCommand;
 import com.hw.aggregate.comment.exception.CommentAccessException;
 import com.hw.aggregate.comment.exception.CommentNotFoundException;
-import com.hw.aggregate.comment.exception.CommentPostMismatchException;
 import com.hw.aggregate.comment.exception.CommentUnsupportedSortOrderException;
 import com.hw.aggregate.comment.model.Comment;
 import com.hw.aggregate.comment.model.CommentSortCriteriaEnum;
@@ -46,12 +45,10 @@ public class CommentApplicationService {
     }
 
     //private owner only
-    public void deleteCommentFromPost(DeleteCommentCommand command) {
+    public void deleteComment(DeleteCommentCommand command) {
         Optional<Comment> byId = commentRepository.findById(Long.parseLong(command.getCommentId()));
         if (byId.isEmpty())
             throw new CommentNotFoundException();
-        if (!byId.get().getPostId().equals(Long.parseLong(command.getPostId())))
-            throw new CommentPostMismatchException();
         if (!byId.get().getCreatedBy().equals(command.getUserId()))
             throw new CommentAccessException();
         commentRepository.delete(byId.get());
@@ -65,7 +62,7 @@ public class CommentApplicationService {
     }
 
     private PageRequest getPageRequest(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
-        Sort initialSort = new Sort(Sort.Direction.ASC, CommentSortCriteriaEnum.fromString(sortBy).getSortCriteria());
+        Sort initialSort = new Sort(Sort.Direction.ASC, CommentSortCriteriaEnum.fromString(sortBy).name());
         Sort finalSort;
         if (sortOrder.equalsIgnoreCase(CommentSortOrderEnum.ASC.getSortOrder())) {
             finalSort = initialSort.ascending();

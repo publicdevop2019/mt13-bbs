@@ -2,7 +2,6 @@ package com.hw.clazz;
 
 import com.hw.aggregate.comment.exception.CommentAccessException;
 import com.hw.aggregate.comment.exception.CommentNotFoundException;
-import com.hw.aggregate.comment.exception.CommentPostMismatchException;
 import com.hw.aggregate.comment.exception.CommentUnsupportedSortOrderException;
 import com.hw.aggregate.post.exception.PostAccessException;
 import com.hw.aggregate.post.exception.PostNotFoundException;
@@ -28,7 +27,6 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
             PostNotFoundException.class,
             PostUnsupportedSortOrderException.class,
             CommentUnsupportedSortOrderException.class,
-            CommentPostMismatchException.class
     })
     protected ResponseEntity<?> handle400Exception(RuntimeException ex, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(ex);

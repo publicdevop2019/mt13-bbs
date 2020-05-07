@@ -3,8 +3,8 @@ package com.hw.aggregate.comment.model;
 import com.hw.shared.BadRequestException;
 
 public enum CommentSortCriteriaEnum {
-    ID("id"),
-    Date("date");
+    id("id"),
+    createdAt("date");
     private String sortCriteria;
 
     CommentSortCriteriaEnum(String sortCriteria) {
