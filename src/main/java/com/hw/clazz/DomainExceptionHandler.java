@@ -10,6 +10,7 @@ import com.hw.shared.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,7 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
             PostNotFoundException.class,
             PostUnsupportedSortOrderException.class,
             CommentUnsupportedSortOrderException.class,
+            DataIntegrityViolationException.class
     })
     protected ResponseEntity<?> handle400Exception(RuntimeException ex, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(ex);

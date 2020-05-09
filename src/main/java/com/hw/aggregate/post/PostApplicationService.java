@@ -68,6 +68,12 @@ public class PostApplicationService {
         return new PostDetailRepresentation(getPostById(postId));
     }
 
+    //internal
+    @Transactional
+    public Boolean existById(String postId) {
+        return postRepository.existsById(Long.parseLong(postId));
+    }
+
     //private owner only
     @Transactional
     public void updatePost(String userId, String postId, UpdatePostCommand command) {

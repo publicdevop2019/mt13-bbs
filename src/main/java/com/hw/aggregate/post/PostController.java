@@ -1,7 +1,5 @@
 package com.hw.aggregate.post;
 
-import com.hw.aggregate.comment.command.CreateCommentCommand;
-import com.hw.aggregate.comment.command.DeleteCommentCommand;
 import com.hw.aggregate.post.command.CreatePostCommand;
 import com.hw.aggregate.post.command.DeletePostCommand;
 import com.hw.aggregate.post.command.UpdatePostCommand;

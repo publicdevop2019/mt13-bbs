@@ -80,4 +80,8 @@ public class CommentApplicationService {
         }
         return PageRequest.of(pageNumber, pageSize, finalSort);
     }
+
+    public boolean existById(String commentId) {
+        return commentRepository.existsById(Long.parseLong(commentId));
+    }
 }
