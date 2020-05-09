@@ -13,13 +13,16 @@ public class PostDetailRepresentation {
     private Date publishedAt;
     private String publishedBy;
     private String content;
+    private Long likeNum;
+//    private Long dislikeNum;
 
-    public PostDetailRepresentation(Post post) {
+    public PostDetailRepresentation(Post post, Long likeNum) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.topic = post.getTopic();
         this.publishedAt = post.getCreatedAt();
         this.publishedBy = post.getCreatedBy();
         this.content = post.getContent();
+        this.likeNum = likeNum;
     }
 }

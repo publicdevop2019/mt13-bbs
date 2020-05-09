@@ -11,7 +11,8 @@ import com.hw.aggregate.comment.model.CommentSortOrderEnum;
 import com.hw.aggregate.comment.representation.CommentCountPublicRepresentation;
 import com.hw.aggregate.comment.representation.CommentSummaryPrivateRepresentation;
 import com.hw.aggregate.comment.representation.CommentSummaryPublicRepresentation;
-import com.hw.aggregate.post.PostRepository;
+import com.hw.aggregate.like.LikeApplicationService;
+import com.hw.aggregate.post.PostApplicationService;
 import com.hw.aggregate.post.exception.PostNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -19,7 +20,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CommentApplicationService {
@@ -27,7 +30,10 @@ public class CommentApplicationService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private PostRepository postRepository;
+    private PostApplicationService postApplicationService;
+
+    @Autowired
+    private LikeApplicationService likeApplicationService;
 
     //private any user
     public CommentSummaryPrivateRepresentation getAllCommentsForUser(String userId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
@@ -38,7 +44,7 @@ public class CommentApplicationService {
 
     //private any user
     public void addCommentToPost(String postId, CreateCommentCommand command) {
-        boolean b = postRepository.existsById(Long.parseLong(postId));
+        boolean b = postApplicationService.existById(postId);
         if (!b)
             throw new PostNotFoundException();
         Comment comment = Comment.create(command.getContent(), command.getReplyTo(), postId);
@@ -59,7 +65,11 @@ public class CommentApplicationService {
     public CommentSummaryPublicRepresentation getAllCommentsForPost(String postId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Comment> commentsByPostId = commentRepository.findCommentsByPostId(Long.parseLong(postId), pageRequest);
-        return new CommentSummaryPublicRepresentation(commentsByPostId.getContent());
+        List<Comment> content = commentsByPostId.getContent();
+        List<CommentSummaryPublicRepresentation.CommentPublicCard> collect = content.stream().map(e -> new CommentSummaryPublicRepresentation.CommentPublicCard(e, likeApplicationService.countLikeForComment(String.valueOf(e.getId())).getCount())).collect(Collectors.toList());
+        CommentSummaryPublicRepresentation commentSummaryPublicRepresentation = new CommentSummaryPublicRepresentation();
+        commentSummaryPublicRepresentation.setCommentList(collect);
+        return commentSummaryPublicRepresentation;
     }
 
     // internal

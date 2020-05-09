@@ -20,13 +20,6 @@ public class LikeApplicationService {
     @Autowired
     private CommentApplicationService commentApplicationService;
 
-    //public
-    @Transactional
-    public LikeRepresentation getLike(String likeId) {
-        Long aLong = likeRepository.countLikeForReference(likeId);
-        return new LikeRepresentation(aLong);
-    }
-
     //private
     @Transactional
     public void addLikePost(String userId, String postId) {
@@ -45,8 +38,26 @@ public class LikeApplicationService {
 
     //private
     @Transactional
-    public void removeLike(String userId, String referencedId) {
-        likeRepository.deleteByUserIdAndPostId(userId, referencedId);
+    public void removeCommentLike(String userId, String referencedId) {
+        likeRepository.deleteByUserIdAndPostId(userId, referencedId, COMMENT);
+    }
+
+    //private
+    @Transactional
+    public void removePostLike(String userId, String referencedId) {
+        likeRepository.deleteByUserIdAndPostId(userId, referencedId, POST);
+    }
+
+    //internal
+    @Transactional
+    public LikeRepresentation countLikeForPost(String referencedId) {
+        return new LikeRepresentation(likeRepository.countLikeForReference(referencedId, POST));
+    }
+
+    //internal
+    @Transactional
+    public LikeRepresentation countLikeForComment(String referencedId) {
+        return new LikeRepresentation(likeRepository.countLikeForReference(referencedId, COMMENT));
     }
 
     private void addLike(String userId, String referencedId, String type) {

@@ -28,13 +28,13 @@ public class LikeController {
 
     @DeleteMapping("private/posts/{postId}/likes")
     public ResponseEntity<?> removeLikePost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId) {
-        likeApplicationService.removeLike(ServiceUtility.getUserId(authorization), postId);
+        likeApplicationService.removePostLike(ServiceUtility.getUserId(authorization), postId);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("private/comments/{commentId}/likes")
     public ResponseEntity<?> removeLikeComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
-        likeApplicationService.removeLike(ServiceUtility.getUserId(authorization), commentId);
+        likeApplicationService.removeCommentLike(ServiceUtility.getUserId(authorization), commentId);
         return ResponseEntity.ok().build();
     }
 }

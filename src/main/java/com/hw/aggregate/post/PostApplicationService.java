@@ -1,6 +1,8 @@
 package com.hw.aggregate.post;
 
 import com.hw.aggregate.comment.CommentApplicationService;
+import com.hw.aggregate.like.LikeApplicationService;
+import com.hw.aggregate.like.representation.LikeRepresentation;
 import com.hw.aggregate.post.command.CreatePostCommand;
 import com.hw.aggregate.post.command.DeletePostCommand;
 import com.hw.aggregate.post.command.UpdatePostCommand;
@@ -30,6 +32,8 @@ public class PostApplicationService {
     private PostRepository postRepository;
     @Autowired
     private CommentApplicationService commentApplicationService;
+    @Autowired
+    private LikeApplicationService likeApplicationService;
 
     //public
     @Transactional(readOnly = true)
@@ -65,11 +69,12 @@ public class PostApplicationService {
         Post postById = getPostByIdForUpdate(postId);
         postById.setViewNum(postById.getViewNum() + 1);
         postRepository.save(postById);
-        return new PostDetailRepresentation(getPostById(postId));
+        LikeRepresentation likeRepresentation = likeApplicationService.countLikeForPost(postId);
+        return new PostDetailRepresentation(getPostById(postId), likeRepresentation.getCount());
     }
 
     //internal
-    @Transactional
+    @Transactional(readOnly = true)
     public Boolean existById(String postId) {
         return postRepository.existsById(Long.parseLong(postId));
     }
