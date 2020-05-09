@@ -11,7 +11,7 @@ public class PostDetailRepresentation {
     private String title;
     private String topic;
     private Date publishedAt;
-    private String publisherId;
+    private String publishedBy;
     private String content;
 
     public PostDetailRepresentation(Post post) {
@@ -19,7 +19,7 @@ public class PostDetailRepresentation {
         this.title = post.getTitle();
         this.topic = post.getTopic();
         this.publishedAt = post.getCreatedAt();
-        this.publisherId = post.getCreatedBy();
+        this.publishedBy = post.getCreatedBy();
         this.content = post.getContent();
     }
 }

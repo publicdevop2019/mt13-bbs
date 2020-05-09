@@ -12,6 +12,9 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT p FROM #{#entityName} as p WHERE p.postId = ?1")
     Page<Comment> findCommentsByPostId(Long postId, Pageable pageable);
 
+    @Query("SELECT COUNT(p) FROM #{#entityName} as p WHERE p.postId = ?1")
+    Long countCommentByPostId(Long postId);
+
     @Query("SELECT p FROM #{#entityName} as p WHERE p.createdBy = ?1")
     Page<Comment> findCommentsForUser(String userId, Pageable pageable);
 }

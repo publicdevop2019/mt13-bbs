@@ -22,6 +22,12 @@ public class Post extends Auditable {
     private String topic;
     @Column
     private String content;
+    @Column
+    private Long viewNum;
+    @Column
+    private Long likeNum;
+    @Column
+    private Long dislikeNum;
     @Version
     private Integer version;
 
@@ -33,5 +39,6 @@ public class Post extends Auditable {
         this.title = title;
         this.topic = topic;
         this.content = content;
+        this.viewNum = 0L;
     }
 }
