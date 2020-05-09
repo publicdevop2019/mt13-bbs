@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
 
 @Entity
 @Table
@@ -23,12 +21,7 @@ public class Post extends Auditable {
     @Column
     private String topic;
     @Column
-    private Date publishAt;
-    @Column
     private String content;
-
-//    @Column(length = 100000)
-//    private ArrayList<Comment> commentList;
     @Version
     private Integer version;
 
@@ -39,8 +32,6 @@ public class Post extends Auditable {
     private Post(String title, String topic, String content) {
         this.title = title;
         this.topic = topic;
-        this.publishAt = new Date();
         this.content = content;
-//        this.commentList = new ArrayList<>();
     }
 }

@@ -18,7 +18,7 @@ public class PostDetailRepresentation {
         this.id = post.getId();
         this.title = post.getTitle();
         this.topic = post.getTopic();
-        this.publishedAt = post.getPublishAt();
+        this.publishedAt = post.getCreatedAt();
         this.publisherId = post.getCreatedBy();
         this.content = post.getContent();
     }
