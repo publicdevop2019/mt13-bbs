@@ -18,14 +18,16 @@ public class CommentSummaryPublicRepresentation {
         private Date publishedAt;
         private String publishedBy;
         private Long likeNum;
+        private Long dislikeNum;
 
-        public CommentPublicCard(Comment comment, Long likeNum) {
+        public CommentPublicCard(Comment comment, Long likeNum, Long dislikeNum) {
             this.id = comment.getId();
             this.content = comment.getContent();
             this.replyTo = comment.getReplyTo();
             this.publishedAt = comment.getCreatedAt();
             this.publishedBy = comment.getCreatedBy();
             this.likeNum = likeNum;
+            this.dislikeNum = dislikeNum;
         }
     }
 }

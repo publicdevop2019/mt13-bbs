@@ -11,9 +11,9 @@ import com.hw.aggregate.comment.model.CommentSortOrderEnum;
 import com.hw.aggregate.comment.representation.CommentCountPublicRepresentation;
 import com.hw.aggregate.comment.representation.CommentSummaryPrivateRepresentation;
 import com.hw.aggregate.comment.representation.CommentSummaryPublicRepresentation;
-import com.hw.aggregate.like.LikeApplicationService;
 import com.hw.aggregate.post.PostApplicationService;
 import com.hw.aggregate.post.exception.PostNotFoundException;
+import com.hw.aggregate.reaction.ReactionApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +33,7 @@ public class CommentApplicationService {
     private PostApplicationService postApplicationService;
 
     @Autowired
-    private LikeApplicationService likeApplicationService;
+    private ReactionApplicationService likeApplicationService;
 
     //private any user
     public CommentSummaryPrivateRepresentation getAllCommentsForUser(String userId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
@@ -66,7 +66,12 @@ public class CommentApplicationService {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Comment> commentsByPostId = commentRepository.findCommentsByPostId(Long.parseLong(postId), pageRequest);
         List<Comment> content = commentsByPostId.getContent();
-        List<CommentSummaryPublicRepresentation.CommentPublicCard> collect = content.stream().map(e -> new CommentSummaryPublicRepresentation.CommentPublicCard(e, likeApplicationService.countLikeForComment(String.valueOf(e.getId())).getCount())).collect(Collectors.toList());
+        List<CommentSummaryPublicRepresentation.CommentPublicCard> collect =
+                content.stream().map(e ->
+                        new CommentSummaryPublicRepresentation.CommentPublicCard(e,
+                                likeApplicationService.countLikeForComment(String.valueOf(e.getId())).getCount(),
+                                likeApplicationService.countDislikeForComment(String.valueOf(e.getId())).getCount()))
+                        .collect(Collectors.toList());
         CommentSummaryPublicRepresentation commentSummaryPublicRepresentation = new CommentSummaryPublicRepresentation();
         commentSummaryPublicRepresentation.setCommentList(collect);
         return commentSummaryPublicRepresentation;

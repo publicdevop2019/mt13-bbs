@@ -1,4 +1,4 @@
-package com.hw.aggregate.like.exception;
+package com.hw.aggregate.reaction.exception;
 
 public class LikeReferenceNotFoundException extends RuntimeException {
 }

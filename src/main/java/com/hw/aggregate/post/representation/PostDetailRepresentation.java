@@ -14,9 +14,9 @@ public class PostDetailRepresentation {
     private String publishedBy;
     private String content;
     private Long likeNum;
-//    private Long dislikeNum;
+    private Long dislikeNum;
 
-    public PostDetailRepresentation(Post post, Long likeNum) {
+    public PostDetailRepresentation(Post post, Long likeNum, Long dislikeNum) {
         this.id = post.getId();
         this.title = post.getTitle();
         this.topic = post.getTopic();
@@ -24,5 +24,6 @@ public class PostDetailRepresentation {
         this.publishedBy = post.getCreatedBy();
         this.content = post.getContent();
         this.likeNum = likeNum;
+        this.dislikeNum = dislikeNum;
     }
 }

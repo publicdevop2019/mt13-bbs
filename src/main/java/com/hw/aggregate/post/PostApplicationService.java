@@ -1,8 +1,6 @@
 package com.hw.aggregate.post;
 
 import com.hw.aggregate.comment.CommentApplicationService;
-import com.hw.aggregate.like.LikeApplicationService;
-import com.hw.aggregate.like.representation.LikeRepresentation;
 import com.hw.aggregate.post.command.CreatePostCommand;
 import com.hw.aggregate.post.command.DeletePostCommand;
 import com.hw.aggregate.post.command.UpdatePostCommand;
@@ -15,6 +13,8 @@ import com.hw.aggregate.post.model.PostSortOrderEnum;
 import com.hw.aggregate.post.representation.PostCardSummaryRepresentation;
 import com.hw.aggregate.post.representation.PostCreateRepresentation;
 import com.hw.aggregate.post.representation.PostDetailRepresentation;
+import com.hw.aggregate.reaction.ReactionApplicationService;
+import com.hw.aggregate.reaction.representation.ReactionCountRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,7 +33,7 @@ public class PostApplicationService {
     @Autowired
     private CommentApplicationService commentApplicationService;
     @Autowired
-    private LikeApplicationService likeApplicationService;
+    private ReactionApplicationService reactionApplicationService;
 
     //public
     @Transactional(readOnly = true)
@@ -69,8 +69,9 @@ public class PostApplicationService {
         Post postById = getPostByIdForUpdate(postId);
         postById.setViewNum(postById.getViewNum() + 1);
         postRepository.save(postById);
-        LikeRepresentation likeRepresentation = likeApplicationService.countLikeForPost(postId);
-        return new PostDetailRepresentation(getPostById(postId), likeRepresentation.getCount());
+        ReactionCountRepresentation likes = reactionApplicationService.countLikeForPost(postId);
+        ReactionCountRepresentation dislikes = reactionApplicationService.countDislikeForPost(postId);
+        return new PostDetailRepresentation(getPostById(postId), likes.getCount(), dislikes.getCount());
     }
 
     //internal
