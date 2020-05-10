@@ -6,6 +6,7 @@ import com.hw.aggregate.comment.exception.CommentUnsupportedSortOrderException;
 import com.hw.aggregate.post.exception.PostAccessException;
 import com.hw.aggregate.post.exception.PostNotFoundException;
 import com.hw.aggregate.post.exception.PostUnsupportedSortOrderException;
+import com.hw.aggregate.reaction.exception.UnknownReactionTypeException;
 import com.hw.aggregate.reaction.exception.UnknownReferenceTypeException;
 import com.hw.shared.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
@@ -31,6 +32,7 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
             CommentUnsupportedSortOrderException.class,
             DataIntegrityViolationException.class,
             UnknownReferenceTypeException.class,
+            UnknownReactionTypeException.class
 
     })
     protected ResponseEntity<?> handle400Exception(RuntimeException ex, WebRequest request) {

@@ -3,6 +3,7 @@ package com.hw.aggregate.reaction;
 import com.hw.aggregate.comment.CommentApplicationService;
 import com.hw.aggregate.post.PostApplicationService;
 import com.hw.aggregate.reaction.exception.LikeReferenceNotFoundException;
+import com.hw.aggregate.reaction.exception.UnknownReactionTypeException;
 import com.hw.aggregate.reaction.exception.UnknownReferenceTypeException;
 import com.hw.aggregate.reaction.model.CommonReaction;
 import com.hw.aggregate.reaction.model.ReactionEnum;
@@ -57,8 +58,15 @@ public class ReactionApplicationService {
         } else {
             throw new UnknownReferenceTypeException();
         }
-        UserReaction like = UserReaction.create(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum());
-        reactionRepository.save(like);
+        UserReaction reaction = UserReaction.create(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum());
+        reactionRepository.save(reaction);
+        if (cmd.getReactionEnum().equals(ReactionEnum.LIKE)) {
+            reactionRepository.deleteReaction(cmd.getId(), cmd.getRefId(), cmd.getReferenceEnum(), ReactionEnum.DISLIKE);
+        } else if (cmd.getReactionEnum().equals(ReactionEnum.DISLIKE)) {
+            reactionRepository.deleteReaction(cmd.getId(), cmd.getRefId(), cmd.getReferenceEnum(), ReactionEnum.LIKE);
+        } else {
+            throw new UnknownReactionTypeException();
+        }
     }
 
     @Transactional
