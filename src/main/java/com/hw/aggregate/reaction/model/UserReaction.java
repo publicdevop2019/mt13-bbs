@@ -19,15 +19,15 @@ public class UserReaction extends Auditable {
     @Column
     private String referenceId;
     @Column
-    private String referenceType;
+    private ReferenceEnum referenceType;
     @Column
     private ReactionEnum reactionType;
 
-    public static UserReaction create(String referenceId, String type, ReactionEnum reactionEnum) {
-        return new UserReaction(referenceId, type, reactionEnum);
+    public static UserReaction create(String referenceId, ReferenceEnum referenceType, ReactionEnum reactionEnum) {
+        return new UserReaction(referenceId, referenceType, reactionEnum);
     }
 
-    private UserReaction(String referenceId, String referenceType, ReactionEnum reactionEnum) {
+    private UserReaction(String referenceId, ReferenceEnum referenceType, ReactionEnum reactionEnum) {
         this.referenceId = referenceId;
         this.referenceType = referenceType;
         this.reactionType = reactionEnum;
