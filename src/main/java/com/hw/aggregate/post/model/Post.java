@@ -20,7 +20,7 @@ public class Post extends Auditable {
     private String title;
     @Column
     private String topic;
-    @Column
+    @Column(length = 10000)
     private String content;
     @Column
     private Long viewNum;
