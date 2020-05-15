@@ -14,6 +14,7 @@ public class PostDetailRepresentation {
     private String publishedBy;
     private String content;
     private Long likeNum;
+    private Boolean userModified;
     private Long dislikeNum;
 
     public PostDetailRepresentation(Post post, Long likeNum, Long dislikeNum) {
@@ -22,6 +23,7 @@ public class PostDetailRepresentation {
         this.topic = post.getTopic();
         this.publishedAt = post.getCreatedAt();
         this.publishedBy = post.getCreatedBy();
+        this.userModified = post.getUserModified();
         this.content = post.getContent();
         this.likeNum = likeNum;
         this.dislikeNum = dislikeNum;

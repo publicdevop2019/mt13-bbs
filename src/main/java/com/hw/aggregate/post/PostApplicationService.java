@@ -84,9 +84,7 @@ public class PostApplicationService {
     @Transactional
     public void updatePost(String userId, String postId, UpdatePostCommand command) {
         Post postById = getPostById(postId);
-        if (!postById.getCreatedBy().equals(userId))
-            throw new PostAccessException();
-        postById.setContent(command.getContent());
+        postById.updateContent(userId, command.getContent());
         postRepository.save(postById);
     }
 

@@ -1,6 +1,7 @@
 package com.hw.aggregate.post.model;
 
 import com.hw.aggregate.post.command.CreatePostCommand;
+import com.hw.aggregate.post.exception.PostAccessException;
 import com.hw.shared.Auditable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,9 +26,7 @@ public class Post extends Auditable {
     @Column
     private Long viewNum;
     @Column
-    private Long likeNum;
-    @Column
-    private Long dislikeNum;
+    private Boolean userModified;
     @Version
     private Integer version;
 
@@ -40,5 +39,13 @@ public class Post extends Auditable {
         this.topic = topic;
         this.content = content;
         this.viewNum = 0L;
+        this.userModified = Boolean.FALSE;
+    }
+
+    public void updateContent(String userId, String updated) {
+        if (!getCreatedBy().equals(userId))
+            throw new PostAccessException();
+        this.content = updated;
+        this.userModified = Boolean.TRUE;
     }
 }
