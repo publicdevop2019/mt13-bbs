@@ -14,6 +14,7 @@ import com.hw.aggregate.post.representation.PostCardSummaryRepresentation;
 import com.hw.aggregate.post.representation.PostCreateRepresentation;
 import com.hw.aggregate.post.representation.PostDetailRepresentation;
 import com.hw.aggregate.reaction.ReactionApplicationService;
+import com.hw.aggregate.reaction.model.ReferenceService;
 import com.hw.aggregate.reaction.representation.ReactionCountRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,7 +28,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class PostApplicationService {
+public class PostApplicationService implements ReferenceService {
     @Autowired
     private PostRepository postRepository;
     @Autowired

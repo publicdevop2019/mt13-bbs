@@ -1,10 +1,13 @@
 package com.hw.aggregate.reaction.model;
 
+import com.hw.aggregate.reaction.exception.ReferenceNotFoundException;
+import com.hw.aggregate.reaction.exception.UnknownReferenceTypeException;
 import com.hw.shared.Auditable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Map;
 
 @Entity
 @Table(uniqueConstraints =
@@ -23,8 +26,13 @@ public class UserReaction extends Auditable {
     @Column
     private ReactionEnum reactionType;
 
-    public static UserReaction create(String referenceId, ReferenceEnum referenceType, ReactionEnum reactionEnum) {
-        return new UserReaction(referenceId, referenceType, reactionEnum);
+    public static UserReaction create(String refId, ReferenceEnum refEnum, ReactionEnum reactionEnum, Map<ReferenceEnum, ReferenceService> refServices) {
+        ReferenceService refService = refServices.get(refEnum);
+        if (refService == null)
+            throw new UnknownReferenceTypeException();
+        if (!refService.existById(refId))
+            throw new ReferenceNotFoundException();
+        return new UserReaction(refId, refEnum, reactionEnum);
     }
 
     private UserReaction(String referenceId, ReferenceEnum referenceType, ReactionEnum reactionEnum) {

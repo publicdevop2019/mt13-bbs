@@ -14,18 +14,20 @@ import com.hw.aggregate.comment.representation.CommentSummaryPublicRepresentatio
 import com.hw.aggregate.post.PostApplicationService;
 import com.hw.aggregate.post.exception.PostNotFoundException;
 import com.hw.aggregate.reaction.ReactionApplicationService;
+import com.hw.aggregate.reaction.model.ReferenceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CommentApplicationService {
+public class CommentApplicationService implements ReferenceService {
     @Autowired
     private CommentRepository commentRepository;
 
@@ -36,6 +38,7 @@ public class CommentApplicationService {
     private ReactionApplicationService likeApplicationService;
 
     //private any user
+    @Transactional(readOnly = true)
     public CommentSummaryPrivateRepresentation getAllCommentsForUser(String userId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Comment> commentsForUser = commentRepository.findCommentsForUser(userId, pageRequest);
@@ -43,6 +46,7 @@ public class CommentApplicationService {
     }
 
     //private any user
+    @Transactional
     public void addCommentToPost(String postId, CreateCommentCommand command) {
         boolean b = postApplicationService.existById(postId);
         if (!b)
@@ -52,6 +56,7 @@ public class CommentApplicationService {
     }
 
     //private owner only
+    @Transactional
     public void deleteComment(DeleteCommentCommand command) {
         Optional<Comment> byId = commentRepository.findById(Long.parseLong(command.getCommentId()));
         if (byId.isEmpty())
@@ -62,6 +67,7 @@ public class CommentApplicationService {
     }
 
     // public
+    @Transactional(readOnly = true)
     public CommentSummaryPublicRepresentation getAllCommentsForPost(String postId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Comment> commentsByPostId = commentRepository.findCommentsByPostId(Long.parseLong(postId), pageRequest);
@@ -78,9 +84,16 @@ public class CommentApplicationService {
     }
 
     // internal
+    @Transactional(readOnly = true)
     public CommentCountPublicRepresentation countCommentForPost(Long postId) {
         Long aLong = commentRepository.countCommentByPostId(postId);
         return new CommentCountPublicRepresentation(aLong);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean existById(String refId) {
+        return commentRepository.existsById(Long.parseLong(refId));
     }
 
     private PageRequest getPageRequest(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
@@ -94,9 +107,5 @@ public class CommentApplicationService {
             throw new CommentUnsupportedSortOrderException();
         }
         return PageRequest.of(pageNumber, pageSize, finalSort);
-    }
-
-    public boolean existById(String commentId) {
-        return commentRepository.existsById(Long.parseLong(commentId));
     }
 }
