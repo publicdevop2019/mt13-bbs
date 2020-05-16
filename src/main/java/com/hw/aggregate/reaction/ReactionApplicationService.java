@@ -48,7 +48,7 @@ public class ReactionApplicationService {
     }
 
     @Transactional
-    public void addActionToRef(CommonReaction cmd) {
+    public void addAction(CommonReaction cmd) {
         if (cmd.getReferenceEnum().equals(ReferenceEnum.POST)) {
             if (!postApplicationService.existById(cmd.getRefId()))
                 throw new LikeReferenceNotFoundException();
@@ -70,7 +70,7 @@ public class ReactionApplicationService {
     }
 
     @Transactional
-    public void removeActionRef(CommonReaction cmd) {
+    public void removeAction(CommonReaction cmd) {
         reactionRepository.deleteReaction(cmd.getId(), cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum());
     }
 }
