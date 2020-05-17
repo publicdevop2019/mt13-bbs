@@ -6,8 +6,8 @@ import com.hw.aggregate.comment.exception.CommentUnsupportedSortOrderException;
 import com.hw.aggregate.post.exception.PostAccessException;
 import com.hw.aggregate.post.exception.PostNotFoundException;
 import com.hw.aggregate.post.exception.PostUnsupportedSortOrderException;
-import com.hw.aggregate.reaction.exception.UnknownReactionTypeException;
-import com.hw.aggregate.reaction.exception.UnknownReferenceTypeException;
+import com.hw.aggregate.reaction.exception.FieldValidationException;
+import com.hw.aggregate.reaction.exception.ReferenceServiceNotFoundException;
 import com.hw.shared.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -31,9 +31,8 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
             PostUnsupportedSortOrderException.class,
             CommentUnsupportedSortOrderException.class,
             DataIntegrityViolationException.class,
-            UnknownReferenceTypeException.class,
-            UnknownReactionTypeException.class
-
+            ReferenceServiceNotFoundException.class,
+            FieldValidationException.class
     })
     protected ResponseEntity<?> handle400Exception(RuntimeException ex, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(ex);

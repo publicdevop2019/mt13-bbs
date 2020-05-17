@@ -1,7 +1,9 @@
 package com.hw.aggregate.reaction.model;
 
+import com.hw.aggregate.reaction.ReactionRepository;
+import com.hw.aggregate.reaction.exception.FieldValidationException;
 import com.hw.aggregate.reaction.exception.ReferenceNotFoundException;
-import com.hw.aggregate.reaction.exception.UnknownReferenceTypeException;
+import com.hw.aggregate.reaction.exception.ReferenceServiceNotFoundException;
 import com.hw.shared.Auditable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,12 +28,23 @@ public class UserReaction extends Auditable {
     @Column
     private ReactionEnum reactionType;
 
-    public static UserReaction create(String refId, ReferenceEnum refEnum, ReactionEnum reactionEnum, Map<ReferenceEnum, ReferenceService> refServices) {
+    public static UserReaction create(String refId,
+                                      ReferenceEnum refEnum,
+                                      ReactionEnum reactionEnum,
+                                      Map<ReferenceEnum, ReferenceService> refServices,
+                                      ReactionRepository reactionRepository,
+                                      String userId) {
+        if (refId == null || refEnum == null || reactionEnum == null || refServices == null || reactionRepository == null || userId == null)
+            throw new FieldValidationException();
         ReferenceService refService = refServices.get(refEnum);
         if (refService == null)
-            throw new UnknownReferenceTypeException();
+            throw new ReferenceServiceNotFoundException();
         if (!refService.existById(refId))
             throw new ReferenceNotFoundException();
+        if (reactionEnum.equals(ReactionEnum.LIKE))
+            reactionRepository.deleteReaction(userId, refId, refEnum, ReactionEnum.DISLIKE);
+        if (reactionEnum.equals(ReactionEnum.DISLIKE))
+            reactionRepository.deleteReaction(userId, refId, refEnum, ReactionEnum.LIKE);
         return new UserReaction(refId, refEnum, reactionEnum);
     }
 

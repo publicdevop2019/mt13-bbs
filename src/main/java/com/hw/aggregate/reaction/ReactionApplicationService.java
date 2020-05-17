@@ -2,7 +2,6 @@ package com.hw.aggregate.reaction;
 
 import com.hw.aggregate.comment.CommentApplicationService;
 import com.hw.aggregate.post.PostApplicationService;
-import com.hw.aggregate.reaction.exception.UnknownReactionTypeException;
 import com.hw.aggregate.reaction.model.*;
 import com.hw.aggregate.reaction.representation.ReactionCountRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,19 +54,12 @@ public class ReactionApplicationService {
 
     @Transactional
     public void addAction(CommonReaction cmd) {
-        UserReaction reaction = UserReaction.create(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices);
-        if (cmd.getReactionEnum().equals(ReactionEnum.LIKE)) {
-            reactionRepository.deleteReaction(cmd.getId(), cmd.getRefId(), cmd.getReferenceEnum(), ReactionEnum.DISLIKE);
-        } else if (cmd.getReactionEnum().equals(ReactionEnum.DISLIKE)) {
-            reactionRepository.deleteReaction(cmd.getId(), cmd.getRefId(), cmd.getReferenceEnum(), ReactionEnum.LIKE);
-        } else {
-            throw new UnknownReactionTypeException();
-        }
+        UserReaction reaction = UserReaction.create(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices, reactionRepository, cmd.getUserId());
         reactionRepository.save(reaction);
     }
 
     @Transactional
     public void removeAction(CommonReaction cmd) {
-        reactionRepository.deleteReaction(cmd.getId(), cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum());
+        reactionRepository.deleteReaction(cmd.getUserId(), cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum());
     }
 }
