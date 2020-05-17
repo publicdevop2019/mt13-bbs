@@ -8,6 +8,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -32,7 +33,7 @@ public class UserReactionTest {
         ReferenceService mock1 = mock(ReferenceService.class);
         when(mock.get(any())).thenReturn(mock1);
         when(mock1.existById(anyString())).thenReturn(Boolean.TRUE);
-        doNothing().when(reactionRepository).deleteReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
+        doReturn(Optional.empty()).when(reactionRepository).findReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
         UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr());
     }
 
@@ -42,7 +43,7 @@ public class UserReactionTest {
         ReferenceService mock1 = mock(ReferenceService.class);
         when(mock.get(any())).thenReturn(mock1);
         when(mock1.existById(anyString())).thenReturn(Boolean.FALSE);
-        doNothing().when(reactionRepository).deleteReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
+        doReturn(Optional.empty()).when(reactionRepository).findReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
         UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr());
     }
 
@@ -50,7 +51,7 @@ public class UserReactionTest {
     public void create_ref_svc_not_exist() {
         HashMap mock = mock(HashMap.class);
         when(mock.get(any())).thenReturn(null);
-        doNothing().when(reactionRepository).deleteReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
+        doReturn(Optional.empty()).when(reactionRepository).findReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
         UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr());
     }
 

@@ -8,6 +8,10 @@ import java.util.List;
 
 @Data
 public class CommentSummaryPublicRepresentation {
+    public CommentSummaryPublicRepresentation(List<CommentPublicCard> commentList) {
+        this.commentList = commentList;
+    }
+
     private List<CommentPublicCard> commentList;
 
     @Data

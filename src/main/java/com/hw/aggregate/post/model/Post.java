@@ -1,12 +1,15 @@
 package com.hw.aggregate.post.model;
 
+import com.hw.aggregate.post.PostRepository;
 import com.hw.aggregate.post.command.CreatePostCommand;
 import com.hw.aggregate.post.exception.PostAccessException;
+import com.hw.aggregate.post.exception.PostNotFoundException;
 import com.hw.shared.Auditable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity
 @Table
@@ -40,6 +43,30 @@ public class Post extends Auditable {
         this.content = content;
         this.viewNum = 0L;
         this.userModified = Boolean.FALSE;
+    }
+
+    public static void delete(String postId, String userId, PostRepository postRepository) {
+        Optional<Post> byId = postRepository.findById(Long.parseLong(postId));
+        if (byId.isEmpty())
+            return;
+        if (!byId.get().getCreatedBy().equals(userId))
+            throw new PostAccessException();
+        postRepository.deleteById(byId.get().getId());
+    }
+
+    public static Post get(String postId, PostRepository postRepository) {
+        Optional<Post> byId = postRepository.findById(Long.parseLong(postId));
+        if (byId.isEmpty())
+            throw new PostNotFoundException();
+        return byId.get();
+    }
+
+    public static Post readWithCount(String postId, PostRepository postRepository) {
+        Optional<Post> byId = postRepository.findByIdForUpdate(Long.parseLong(postId));
+        if (byId.isEmpty())
+            throw new PostNotFoundException();
+        byId.get().setViewNum(byId.get().getViewNum() + 1);
+        return byId.get();
     }
 
     public void updateContent(String userId, String updated) {

@@ -8,6 +8,10 @@ import java.util.List;
 
 @Data
 public class PostCardSummaryRepresentation {
+    public PostCardSummaryRepresentation(List<PostCard> postCardList) {
+        this.postCardList = postCardList;
+    }
+
     private List<PostCard> postCardList;
 
     @Data

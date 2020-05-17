@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Map;
+import java.util.Optional;
 
 @Entity
 @Table(uniqueConstraints =
@@ -42,9 +43,9 @@ public class UserReaction extends Auditable {
         if (!refService.existById(refId))
             throw new ReferenceNotFoundException();
         if (reactionEnum.equals(ReactionEnum.LIKE))
-            reactionRepository.deleteReaction(userId, refId, refEnum, ReactionEnum.DISLIKE);
+            delete(userId, refId, refEnum, ReactionEnum.DISLIKE, reactionRepository);
         if (reactionEnum.equals(ReactionEnum.DISLIKE))
-            reactionRepository.deleteReaction(userId, refId, refEnum, ReactionEnum.LIKE);
+            delete(userId, refId, refEnum, ReactionEnum.LIKE, reactionRepository);
         return new UserReaction(refId, refEnum, reactionEnum);
     }
 
@@ -52,5 +53,10 @@ public class UserReaction extends Auditable {
         this.referenceId = referenceId;
         this.referenceType = referenceType;
         this.reactionType = reactionEnum;
+    }
+
+    public static void delete(String userId, String refId, ReferenceEnum referenceEnum, ReactionEnum reactionEnum, ReactionRepository reactionRepository) {
+        Optional<UserReaction> reaction = reactionRepository.findReaction(userId, refId, referenceEnum, reactionEnum);
+        reaction.ifPresent(userReaction -> reactionRepository.deleteById(userReaction.getId()));
     }
 }
