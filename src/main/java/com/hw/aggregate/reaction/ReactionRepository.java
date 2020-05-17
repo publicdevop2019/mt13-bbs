@@ -13,7 +13,10 @@ public interface ReactionRepository extends JpaRepository<UserReaction, Long> {
     @Query("SELECT COUNT(p) FROM #{#entityName} as p WHERE p.referenceId = ?1 AND p.referenceType = ?2 AND p.reactionType = ?3")
     Long countReaction(String referenceId, ReferenceEnum referenceType, ReactionEnum reactionType);
 
-    @Query("SELECT FROM #{#entityName} as p.createdBy = ?1 AND p WHERE p.referenceId= ?2 AND p.referenceType= ?32 AND p.reactionType = ?4")
+    @Query("SELECT p FROM #{#entityName} as p WHERE p.createdBy = ?1 AND p.referenceId= ?2 AND p.referenceType= ?3 AND p.reactionType = ?4")
     Optional<UserReaction> findReaction(String userId, String referenceId, ReferenceEnum referenceType, ReactionEnum reactionType);
 
+    @Modifying
+    @Query("DELETE FROM #{#entityName} as p WHERE p.referenceId = ?1")
+    void purgeReactionForReference(String referenceId);
 }

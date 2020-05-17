@@ -4,8 +4,6 @@ import com.hw.aggregate.comment.CommentApplicationService;
 import com.hw.aggregate.post.command.CreatePostCommand;
 import com.hw.aggregate.post.command.DeletePostCommand;
 import com.hw.aggregate.post.command.UpdatePostCommand;
-import com.hw.aggregate.post.exception.PostAccessException;
-import com.hw.aggregate.post.exception.PostNotFoundException;
 import com.hw.aggregate.post.exception.PostUnsupportedSortOrderException;
 import com.hw.aggregate.post.model.Post;
 import com.hw.aggregate.post.model.PostSortCriteriaEnum;
@@ -24,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,9 +39,7 @@ public class PostApplicationService implements ReferenceService {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Post> postsByTopic = postRepository.findPostsByTopic(topic, pageRequest);
         List<PostCardSummaryRepresentation.PostCard> collect = postsByTopic.get().map(e -> new PostCardSummaryRepresentation.PostCard(e, commentApplicationService.countCommentForPost(e.getId()).getCount())).collect(Collectors.toList());
-        PostCardSummaryRepresentation postCardSummaryRepresentation = new PostCardSummaryRepresentation();
-        postCardSummaryRepresentation.setPostCardList(collect);
-        return postCardSummaryRepresentation;
+        return new PostCardSummaryRepresentation(collect);
     }
 
     //private any user
@@ -53,26 +48,22 @@ public class PostApplicationService implements ReferenceService {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Post> postsByTopic = postRepository.findPostsForUser(userId, pageRequest);
         List<PostCardSummaryRepresentation.PostCard> collect = postsByTopic.get().map(e -> new PostCardSummaryRepresentation.PostCard(e, commentApplicationService.countCommentForPost(e.getId()).getCount())).collect(Collectors.toList());
-        PostCardSummaryRepresentation postCardSummaryRepresentation = new PostCardSummaryRepresentation();
-        postCardSummaryRepresentation.setPostCardList(collect);
-        return postCardSummaryRepresentation;
+        return new PostCardSummaryRepresentation(collect);
     }
 
     //private any user
     @Transactional
     public PostCreateRepresentation createPost(CreatePostCommand command) {
-        return new PostCreateRepresentation(postRepository.save(Post.create(command)));
+        return new PostCreateRepresentation(Post.create(command, postRepository));
     }
 
     //public
     @Transactional
     public PostDetailRepresentation readPostById(String postId) {
-        Post postById = getPostByIdForUpdate(postId);
-        postById.setViewNum(postById.getViewNum() + 1);
-        postRepository.save(postById);
+        Post postById = Post.readThenUpdateCount(postId, postRepository);
         ReactionCountRepresentation likes = reactionApplicationService.countLikeForPost(postId);
         ReactionCountRepresentation dislikes = reactionApplicationService.countDislikeForPost(postId);
-        return new PostDetailRepresentation(getPostById(postId), likes.getCount(), dislikes.getCount());
+        return new PostDetailRepresentation(postById, likes.getCount(), dislikes.getCount());
     }
 
     //internal
@@ -84,7 +75,7 @@ public class PostApplicationService implements ReferenceService {
     //private owner only
     @Transactional
     public void updatePost(String userId, String postId, UpdatePostCommand command) {
-        Post postById = getPostById(postId);
+        Post postById = Post.read(postId, postRepository);
         postById.updateContent(userId, command.getContent());
         postRepository.save(postById);
     }
@@ -92,25 +83,9 @@ public class PostApplicationService implements ReferenceService {
     //private owner only
     @Transactional
     public void deletePost(DeletePostCommand command) {
-        Post postById = getPostById(command.getPostId());
-        if (!postById.getCreatedBy().equals(command.getUserId()))
-            throw new PostAccessException();
-        postRepository.deleteById(Long.parseLong(command.getPostId()));
-    }
-
-
-    private Post getPostById(String postId) {
-        Optional<Post> byId = postRepository.findById(Long.parseLong(postId));
-        if (byId.isEmpty())
-            throw new PostNotFoundException();
-        return byId.get();
-    }
-
-    private Post getPostByIdForUpdate(String postId) {
-        Optional<Post> byId = postRepository.findByIdForUpdate(Long.parseLong(postId));
-        if (byId.isEmpty())
-            throw new PostNotFoundException();
-        return byId.get();
+        Post.delete(command.getPostId(), command.getUserId(), postRepository);
+        commentApplicationService.purgeComments(command.getPostId());
+        reactionApplicationService.purgeReactions(command.getPostId());
     }
 
     private PageRequest getPageRequest(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {

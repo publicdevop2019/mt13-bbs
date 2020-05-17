@@ -2,6 +2,7 @@ package com.hw.aggregate.comment.model;
 
 import com.hw.aggregate.comment.CommentRepository;
 import com.hw.aggregate.comment.exception.CommentAccessException;
+import com.hw.aggregate.comment.exception.CommentNotFoundException;
 import com.hw.aggregate.reaction.exception.ReferenceNotFoundException;
 import com.hw.aggregate.reaction.model.ReferenceService;
 import com.hw.shared.Auditable;
@@ -28,11 +29,11 @@ public class Comment extends Auditable {
     @Column
     private Long referenceId;
 
-    public static Comment create(String content, String replyTo, String refId, List<ReferenceService> refServices) {
+    public static Comment create(String content, String replyTo, String refId, List<ReferenceService> refServices, CommentRepository commentRepository) {
         boolean b = refServices.stream().anyMatch(e -> e.existById(refId));
         if (!b)
             throw new ReferenceNotFoundException();
-        return new Comment(content, replyTo, Long.parseLong(refId));
+        return commentRepository.save(new Comment(content, replyTo, Long.parseLong(refId)));
     }
 
     private Comment(String content, String replyTo, Long postId) {
@@ -44,7 +45,7 @@ public class Comment extends Auditable {
     public static void delete(String commentId, String userId, CommentRepository commentRepository) {
         Optional<Comment> byId = commentRepository.findById(Long.parseLong(commentId));
         if (byId.isEmpty())
-            return;
+            throw new CommentNotFoundException();
         if (!byId.get().getCreatedBy().equals(userId))
             throw new CommentAccessException();
         commentRepository.delete(byId.get());

@@ -17,49 +17,49 @@ public class ReactionController {
 
     @PostMapping("private/posts/{postId}/likes")
     public ResponseEntity<?> addLikePost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId) {
-        reactionApplicationService.addAction(new AddLikePostCommand(ServiceUtility.getUserId(authorization), postId));
+        reactionApplicationService.addReaction(new AddLikePostCommand(ServiceUtility.getUserId(authorization), postId));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("private/comments/{commentId}/likes")
     public ResponseEntity<?> addLikeComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
-        reactionApplicationService.addAction(new AddLikeCommentCommand(ServiceUtility.getUserId(authorization), commentId));
+        reactionApplicationService.addReaction(new AddLikeCommentCommand(ServiceUtility.getUserId(authorization), commentId));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("private/posts/{postId}/likes")
     public ResponseEntity<?> removeLikePost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId) {
-        reactionApplicationService.removeAction(new RemoveLikePostCommand(ServiceUtility.getUserId(authorization), postId));
+        reactionApplicationService.removeReaction(new RemoveLikePostCommand(ServiceUtility.getUserId(authorization), postId));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("private/comments/{commentId}/likes")
     public ResponseEntity<?> removeLikeComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
-        reactionApplicationService.removeAction(new RemoveLikeCommentCommand(ServiceUtility.getUserId(authorization), commentId));
+        reactionApplicationService.removeReaction(new RemoveLikeCommentCommand(ServiceUtility.getUserId(authorization), commentId));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("private/posts/{postId}/dislikes")
     public ResponseEntity<?> addDislikePost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId) {
-        reactionApplicationService.addAction(new AddDislikePostCommand(ServiceUtility.getUserId(authorization), postId));
+        reactionApplicationService.addReaction(new AddDislikePostCommand(ServiceUtility.getUserId(authorization), postId));
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("private/comments/{commentId}/dislikes")
     public ResponseEntity<?> addDislikeComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
-        reactionApplicationService.addAction(new AddDislikeCommentCommand(ServiceUtility.getUserId(authorization), commentId));
+        reactionApplicationService.addReaction(new AddDislikeCommentCommand(ServiceUtility.getUserId(authorization), commentId));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("private/posts/{postId}/dislikes")
     public ResponseEntity<?> removeDislikePost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId) {
-        reactionApplicationService.removeAction(new RemoveDislikePostCommand(ServiceUtility.getUserId(authorization), postId));
+        reactionApplicationService.removeReaction(new RemoveDislikePostCommand(ServiceUtility.getUserId(authorization), postId));
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("private/comments/{commentId}/dislikes")
     public ResponseEntity<?> removeDislikeComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
-        reactionApplicationService.removeAction(new RemoveDislikeCommentCommand(ServiceUtility.getUserId(authorization), commentId));
+        reactionApplicationService.removeReaction(new RemoveDislikeCommentCommand(ServiceUtility.getUserId(authorization), commentId));
         return ResponseEntity.ok().build();
     }
 }

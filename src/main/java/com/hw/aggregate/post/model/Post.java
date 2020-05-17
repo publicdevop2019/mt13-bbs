@@ -33,8 +33,8 @@ public class Post extends Auditable {
     @Version
     private Integer version;
 
-    public static Post create(CreatePostCommand command) {
-        return new Post(command.getTitle(), command.getTopic(), command.getContent());
+    public static Post create(CreatePostCommand command, PostRepository postRepository) {
+        return postRepository.save(new Post(command.getTitle(), command.getTopic(), command.getContent()));
     }
 
     private Post(String title, String topic, String content) {
@@ -48,20 +48,20 @@ public class Post extends Auditable {
     public static void delete(String postId, String userId, PostRepository postRepository) {
         Optional<Post> byId = postRepository.findById(Long.parseLong(postId));
         if (byId.isEmpty())
-            return;
+            throw new PostNotFoundException();
         if (!byId.get().getCreatedBy().equals(userId))
             throw new PostAccessException();
-        postRepository.deleteById(byId.get().getId());
+        postRepository.delete(byId.get());
     }
 
-    public static Post get(String postId, PostRepository postRepository) {
+    public static Post read(String postId, PostRepository postRepository) {
         Optional<Post> byId = postRepository.findById(Long.parseLong(postId));
         if (byId.isEmpty())
             throw new PostNotFoundException();
         return byId.get();
     }
 
-    public static Post readWithCount(String postId, PostRepository postRepository) {
+    public static Post readThenUpdateCount(String postId, PostRepository postRepository) {
         Optional<Post> byId = postRepository.findByIdForUpdate(Long.parseLong(postId));
         if (byId.isEmpty())
             throw new PostNotFoundException();

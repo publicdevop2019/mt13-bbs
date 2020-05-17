@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class ReactionApplicationService {
@@ -54,13 +53,17 @@ public class ReactionApplicationService {
     }
 
     @Transactional
-    public void addAction(CommonReaction cmd) {
-        UserReaction reaction = UserReaction.create(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices, reactionRepository, cmd.getUserId());
-        reactionRepository.save(reaction);
+    public void addReaction(CommonReaction cmd) {
+        UserReaction.create(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices, reactionRepository, cmd.getUserId());
     }
 
     @Transactional
-    public void removeAction(CommonReaction cmd) {
-        UserReaction.delete(cmd.getUserId(), cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(),reactionRepository);
+    public void removeReaction(CommonReaction cmd) {
+        UserReaction.delete(cmd.getUserId(), cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), reactionRepository);
+    }
+
+    @Transactional
+    public void purgeReactions(String refId) {
+        reactionRepository.purgeReactionForReference(refId);
     }
 }

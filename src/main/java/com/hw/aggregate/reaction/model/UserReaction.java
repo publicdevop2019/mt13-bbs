@@ -2,6 +2,7 @@ package com.hw.aggregate.reaction.model;
 
 import com.hw.aggregate.reaction.ReactionRepository;
 import com.hw.aggregate.reaction.exception.FieldValidationException;
+import com.hw.aggregate.reaction.exception.ReactionNotFoundException;
 import com.hw.aggregate.reaction.exception.ReferenceNotFoundException;
 import com.hw.aggregate.reaction.exception.ReferenceServiceNotFoundException;
 import com.hw.shared.Auditable;
@@ -43,10 +44,18 @@ public class UserReaction extends Auditable {
         if (!refService.existById(refId))
             throw new ReferenceNotFoundException();
         if (reactionEnum.equals(ReactionEnum.LIKE))
-            delete(userId, refId, refEnum, ReactionEnum.DISLIKE, reactionRepository);
+            try {
+                delete(userId, refId, refEnum, ReactionEnum.DISLIKE, reactionRepository);
+            } catch (ReactionNotFoundException ex) {
+                //ignore on purpose
+            }
         if (reactionEnum.equals(ReactionEnum.DISLIKE))
-            delete(userId, refId, refEnum, ReactionEnum.LIKE, reactionRepository);
-        return new UserReaction(refId, refEnum, reactionEnum);
+            try {
+                delete(userId, refId, refEnum, ReactionEnum.LIKE, reactionRepository);
+            } catch (ReactionNotFoundException ex) {
+                //ignore on purpose
+            }
+        return reactionRepository.save(new UserReaction(refId, refEnum, reactionEnum));
     }
 
     private UserReaction(String referenceId, ReferenceEnum referenceType, ReactionEnum reactionEnum) {
@@ -57,6 +66,8 @@ public class UserReaction extends Auditable {
 
     public static void delete(String userId, String refId, ReferenceEnum referenceEnum, ReactionEnum reactionEnum, ReactionRepository reactionRepository) {
         Optional<UserReaction> reaction = reactionRepository.findReaction(userId, refId, referenceEnum, reactionEnum);
-        reaction.ifPresent(userReaction -> reactionRepository.deleteById(userReaction.getId()));
+        if (reaction.isEmpty())
+            throw new ReactionNotFoundException();
+        reactionRepository.delete(reaction.get());
     }
 }
