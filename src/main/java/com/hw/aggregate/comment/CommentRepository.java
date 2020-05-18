@@ -11,10 +11,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT p FROM #{#entityName} as p WHERE p.referenceId = ?1")
-    Page<Comment> findCommentsByReferenceIdId(Long postId, Pageable pageable);
+    Page<Comment> findCommentsByReferenceIdId(String refId, Pageable pageable);
 
     @Query("SELECT COUNT(p) FROM #{#entityName} as p WHERE p.referenceId = ?1")
-    Long countCommentByPostId(Long postId);
+    Long countCommentByReferenceId(String refId);
 
     @Query("SELECT p FROM #{#entityName} as p WHERE p.createdBy = ?1")
     Page<Comment> findCommentsForUser(String userId, Pageable pageable);

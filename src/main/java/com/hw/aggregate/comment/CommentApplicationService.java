@@ -65,7 +65,7 @@ public class CommentApplicationService implements ReferenceService {
     public CommentSummaryPublicRepresentation getAllCommentsForPost(String postId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         List<CommentSummaryPublicRepresentation.CommentPublicCard> collect =
-                commentRepository.findCommentsByReferenceIdId(Long.parseLong(postId), pageRequest).getContent().stream().map(e ->
+                commentRepository.findCommentsByReferenceIdId(postId, pageRequest).getContent().stream().map(e ->
                         new CommentSummaryPublicRepresentation.CommentPublicCard(e,
                                 likeApplicationService.countLikeForComment(String.valueOf(e.getId())).getCount(),
                                 likeApplicationService.countDislikeForComment(String.valueOf(e.getId())).getCount()))
@@ -75,8 +75,8 @@ public class CommentApplicationService implements ReferenceService {
 
     // internal
     @Transactional(readOnly = true)
-    public CommentCountPublicRepresentation countCommentForPost(Long postId) {
-        Long aLong = commentRepository.countCommentByPostId(postId);
+    public CommentCountPublicRepresentation countCommentForPost(String postId) {
+        Long aLong = commentRepository.countCommentByReferenceId(postId);
         return new CommentCountPublicRepresentation(aLong);
     }
 

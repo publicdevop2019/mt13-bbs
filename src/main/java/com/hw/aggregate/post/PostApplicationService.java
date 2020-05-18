@@ -38,7 +38,7 @@ public class PostApplicationService implements ReferenceService {
     public PostCardSummaryRepresentation getByTopic(String topic, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Post> postsByTopic = postRepository.findPostsByTopic(topic, pageRequest);
-        List<PostCardSummaryRepresentation.PostCard> collect = postsByTopic.get().map(e -> new PostCardSummaryRepresentation.PostCard(e, commentApplicationService.countCommentForPost(e.getId()).getCount())).collect(Collectors.toList());
+        List<PostCardSummaryRepresentation.PostCard> collect = postsByTopic.get().map(e -> new PostCardSummaryRepresentation.PostCard(e, commentApplicationService.countCommentForPost(e.getId().toString()).getCount())).collect(Collectors.toList());
         return new PostCardSummaryRepresentation(collect);
     }
 
@@ -47,7 +47,7 @@ public class PostApplicationService implements ReferenceService {
     public PostCardSummaryRepresentation getForUser(String userId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Post> postsByTopic = postRepository.findPostsForUser(userId, pageRequest);
-        List<PostCardSummaryRepresentation.PostCard> collect = postsByTopic.get().map(e -> new PostCardSummaryRepresentation.PostCard(e, commentApplicationService.countCommentForPost(e.getId()).getCount())).collect(Collectors.toList());
+        List<PostCardSummaryRepresentation.PostCard> collect = postsByTopic.get().map(e -> new PostCardSummaryRepresentation.PostCard(e, commentApplicationService.countCommentForPost(e.getId().toString()).getCount())).collect(Collectors.toList());
         return new PostCardSummaryRepresentation(collect);
     }
 

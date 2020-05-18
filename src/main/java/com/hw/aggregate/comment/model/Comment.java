@@ -27,16 +27,16 @@ public class Comment extends Auditable {
     @Column
     private String replyTo;
     @Column
-    private Long referenceId;
+    private String referenceId;
 
     public static Comment create(String content, String replyTo, String refId, List<ReferenceService> refServices, CommentRepository commentRepository) {
         boolean b = refServices.stream().anyMatch(e -> e.existById(refId));
         if (!b)
             throw new ReferenceNotFoundException();
-        return commentRepository.save(new Comment(content, replyTo, Long.parseLong(refId)));
+        return commentRepository.save(new Comment(content, replyTo, refId));
     }
 
-    private Comment(String content, String replyTo, Long postId) {
+    private Comment(String content, String replyTo, String postId) {
         this.content = content;
         this.replyTo = replyTo;
         this.referenceId = postId;
