@@ -6,8 +6,10 @@ import com.hw.aggregate.reaction.model.*;
 import com.hw.aggregate.reaction.representation.ReactionCountRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,6 +17,11 @@ import java.util.Map;
 public class ReactionApplicationService {
 
     private Map<ReferenceEnum, ReferenceService> refServices;
+    @Autowired
+    private PlatformTransactionManager transactionManager;
+
+    @Autowired
+    private EntityManager entityManager;
 
     @Autowired
     public void setRefServices(PostApplicationService postApplicationService,
@@ -54,7 +61,7 @@ public class ReactionApplicationService {
 
     @Transactional
     public void addReaction(CommonReaction cmd) {
-        UserReaction.create(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices, reactionRepository, cmd.getUserId());
+        UserReaction.create(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices, reactionRepository, cmd.getUserId(), transactionManager, entityManager);
     }
 
     @Transactional
