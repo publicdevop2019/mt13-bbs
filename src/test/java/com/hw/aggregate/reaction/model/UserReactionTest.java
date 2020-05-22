@@ -34,7 +34,7 @@ public class UserReactionTest {
         when(mock.get(any())).thenReturn(mock1);
         when(mock1.existById(anyString())).thenReturn(Boolean.TRUE);
         doReturn(Optional.empty()).when(reactionRepository).findReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
-        UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr());
+        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr(), null);
     }
 
     @Test(expected = ReferenceNotFoundException.class)
@@ -44,7 +44,7 @@ public class UserReactionTest {
         when(mock.get(any())).thenReturn(mock1);
         when(mock1.existById(anyString())).thenReturn(Boolean.FALSE);
         doReturn(Optional.empty()).when(reactionRepository).findReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
-        UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr());
+        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr(), null);
     }
 
     @Test(expected = ReferenceServiceNotFoundException.class)
@@ -52,45 +52,45 @@ public class UserReactionTest {
         HashMap mock = mock(HashMap.class);
         when(mock.get(any())).thenReturn(null);
         doReturn(Optional.empty()).when(reactionRepository).findReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
-        UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr());
+        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr(), null);
     }
 
     @Test(expected = ReferenceServiceNotFoundException.class)
     public void create_missing_refService() {
-        UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, new HashMap<>(), reactionRepository, randomStr());
+        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, new HashMap<>(), reactionRepository, randomStr(), null);
     }
 
     @Test(expected = FieldValidationException.class)
     public void create_null_fields_0() {
         ReactionRepository instance1 = mock(ReactionRepository.class);
-        UserReaction.create(null, ReferenceEnum.COMMENT, ReactionEnum.LIKE, new HashMap<>(), instance1, randomStr());
+        UserReaction.createOrUpdate(null, ReferenceEnum.COMMENT, ReactionEnum.LIKE, new HashMap<>(), instance1, randomStr(), null);
     }
 
     @Test(expected = FieldValidationException.class)
     public void create_null_fields_1() {
         ReactionRepository instance1 = mock(ReactionRepository.class);
-        UserReaction.create(randomStr(), null, ReactionEnum.LIKE, new HashMap<>(), instance1, randomStr());
+        UserReaction.createOrUpdate(randomStr(), null, ReactionEnum.LIKE, new HashMap<>(), instance1, randomStr(), null);
     }
 
     @Test(expected = FieldValidationException.class)
     public void create_null_fields_2() {
         ReactionRepository instance1 = mock(ReactionRepository.class);
-        UserReaction.create(randomStr(), ReferenceEnum.COMMENT, null, new HashMap<>(), instance1, randomStr());
+        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, null, new HashMap<>(), instance1, randomStr(), null);
     }
 
     @Test(expected = FieldValidationException.class)
     public void create_null_fields_3() {
         ReactionRepository instance1 = mock(ReactionRepository.class);
-        UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, null, instance1, randomStr());
+        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, null, instance1, randomStr(), null);
     }
 
     @Test(expected = FieldValidationException.class)
     public void create_null_fields_4() {
-        UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, new HashMap<>(), null, randomStr());
+        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, new HashMap<>(), null, randomStr(), null);
     }
 
     @Test(expected = FieldValidationException.class)
     public void create_null_fields_5() {
-        UserReaction.create(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, new HashMap<>(), reactionRepository, null);
+        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, new HashMap<>(), reactionRepository, null, null);
     }
 }

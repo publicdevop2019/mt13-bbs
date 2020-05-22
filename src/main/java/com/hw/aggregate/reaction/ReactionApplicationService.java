@@ -8,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityManager;
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
 public class ReactionApplicationService {
-
+    @Autowired
+    private EntityManager entityManager;
     private Map<ReferenceEnum, ReferenceService> refServices;
 
     @Autowired
@@ -54,7 +56,7 @@ public class ReactionApplicationService {
 
     @Transactional
     public void addReaction(CommonReaction cmd) {
-        UserReaction.create(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices, reactionRepository, cmd.getUserId());
+        UserReaction.createOrUpdate(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices, reactionRepository, cmd.getUserId(), entityManager);
     }
 
     @Transactional

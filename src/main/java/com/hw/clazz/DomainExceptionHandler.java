@@ -6,10 +6,7 @@ import com.hw.aggregate.comment.exception.CommentUnsupportedSortOrderException;
 import com.hw.aggregate.post.exception.PostAccessException;
 import com.hw.aggregate.post.exception.PostNotFoundException;
 import com.hw.aggregate.post.exception.PostUnsupportedSortOrderException;
-import com.hw.aggregate.reaction.exception.FieldValidationException;
-import com.hw.aggregate.reaction.exception.ReactionNotFoundException;
-import com.hw.aggregate.reaction.exception.ReferenceNotFoundException;
-import com.hw.aggregate.reaction.exception.ReferenceServiceNotFoundException;
+import com.hw.aggregate.reaction.exception.*;
 import com.hw.shared.ErrorMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
@@ -23,6 +20,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import javax.persistence.PersistenceException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 @Slf4j
@@ -39,7 +37,9 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
             ReferenceServiceNotFoundException.class,
             ReferenceNotFoundException.class,
             FieldValidationException.class,
-            SQLIntegrityConstraintViolationException.class
+            SQLIntegrityConstraintViolationException.class,
+            InsertViolationException.class,
+            PersistenceException.class
     })
     protected ResponseEntity<?> handle400Exception(RuntimeException ex, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(ex);
