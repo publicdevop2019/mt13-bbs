@@ -39,7 +39,8 @@ public class DomainExceptionHandler extends ResponseEntityExceptionHandler {
             FieldValidationException.class,
             SQLIntegrityConstraintViolationException.class,
             InsertViolationException.class,
-            PersistenceException.class
+            PersistenceException.class,
+            ReactionTypeNotFoundException.class
     })
     protected ResponseEntity<?> handle400Exception(RuntimeException ex, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(ex);

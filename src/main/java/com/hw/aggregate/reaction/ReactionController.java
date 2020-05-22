@@ -62,4 +62,52 @@ public class ReactionController {
         reactionApplicationService.removeReaction(new RemoveDislikeCommentCommand(ServiceUtility.getUserId(authorization), commentId));
         return ResponseEntity.ok().build();
     }
+
+    @PostMapping("private/posts/{postId}/reports")
+    public ResponseEntity<?> addReportPost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId) {
+        reactionApplicationService.addReaction(new AddReportPostCommand(ServiceUtility.getUserId(authorization), postId));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("private/comments/{commentId}/reports")
+    public ResponseEntity<?> addReportComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
+        reactionApplicationService.addReaction(new AddReportCommentCommand(ServiceUtility.getUserId(authorization), commentId));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("private/posts/{postId}/reports")
+    public ResponseEntity<?> removeReportPost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId) {
+        reactionApplicationService.removeReaction(new RemoveReportPostCommand(ServiceUtility.getUserId(authorization), postId));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("private/comments/{commentId}/reports")
+    public ResponseEntity<?> removeReportComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
+        reactionApplicationService.removeReaction(new RemoveReportCommentCommand(ServiceUtility.getUserId(authorization), commentId));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("private/posts/{postId}/notInterested")
+    public ResponseEntity<?> addNotInterestedPost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId) {
+        reactionApplicationService.addReaction(new AddNotInterestedPostCommand(ServiceUtility.getUserId(authorization), postId));
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("private/comments/{commentId}/notInterested")
+    public ResponseEntity<?> addNotInterestedComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
+        reactionApplicationService.addReaction(new AddNotInterestedCommentCommand(ServiceUtility.getUserId(authorization), commentId));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("private/posts/{postId}/notInterested")
+    public ResponseEntity<?> removeNotInterestedPost(@RequestHeader("authorization") String authorization, @PathVariable(name = "postId") String postId) {
+        reactionApplicationService.removeReaction(new RemoveNotInterestedPostCommand(ServiceUtility.getUserId(authorization), postId));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("private/comments/{commentId}/notInterested")
+    public ResponseEntity<?> removeNotInterestedComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
+        reactionApplicationService.removeReaction(new RemoveNotInterestedCommentCommand(ServiceUtility.getUserId(authorization), commentId));
+        return ResponseEntity.ok().build();
+    }
 }

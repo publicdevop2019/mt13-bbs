@@ -33,7 +33,7 @@ public class UserReaction extends Auditable {
     @Convert(converter = ReferenceEnum.DBConverter.class)
     private ReferenceEnum referenceType;
 
-    @Column(length = 10)
+    @Column(length = 20)
     @Convert(converter = ReactionEnum.DBConverter.class)
     private ReactionEnum reactionType;
 
@@ -71,8 +71,12 @@ public class UserReaction extends Auditable {
             } else {
                 return insertAIfBNotExistConcurrent(ReactionEnum.DISLIKE.name(), ReactionEnum.LIKE.name(), entityManager, new UserReaction(userId, new Random().nextLong(), refId, refEnum, reactionEnum));
             }
+        } else if (reactionEnum.equals(ReactionEnum.NOT_INTERESTED)) {
+            return reactionRepository.save(new UserReaction(refId, refEnum, reactionEnum));
+        } else if (reactionEnum.equals(ReactionEnum.REPORT)) {
+            return reactionRepository.save(new UserReaction(refId, refEnum, reactionEnum));
         } else {
-            return null;
+            throw new ReactionTypeNotFoundException();
         }
 
     }
@@ -110,6 +114,12 @@ public class UserReaction extends Auditable {
         this.setCreatedBy(userId);
         this.setModifiedBy(userId);
 
+    }
+
+    private UserReaction(String referenceId, ReferenceEnum referenceType, ReactionEnum reactionEnum) {
+        this.referenceId = referenceId;
+        this.referenceType = referenceType;
+        this.reactionType = reactionEnum;
     }
 
     public static void delete(String userId, String refId, ReferenceEnum referenceEnum, ReactionEnum reactionEnum, ReactionRepository reactionRepository) {

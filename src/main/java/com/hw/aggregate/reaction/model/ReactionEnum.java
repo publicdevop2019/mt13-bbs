@@ -4,7 +4,9 @@ import javax.persistence.AttributeConverter;
 
 public enum ReactionEnum {
     LIKE,
-    DISLIKE;
+    DISLIKE,
+    NOT_INTERESTED,
+    REPORT;
 
     public static class DBConverter implements AttributeConverter<ReactionEnum, String> {
         @Override
