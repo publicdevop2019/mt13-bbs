@@ -7,6 +7,8 @@ import com.hw.aggregate.reaction.exception.ReferenceServiceNotFoundException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,11 +32,16 @@ public class UserReactionTest {
     @Test
     public void create() {
         HashMap mock = mock(HashMap.class);
+        EntityManager mock3 = mock(EntityManager.class);
+        Query mock2 = mock(Query.class);
         ReferenceService mock1 = mock(ReferenceService.class);
         when(mock.get(any())).thenReturn(mock1);
+        when(mock3.createNativeQuery(anyString())).thenReturn(mock2);
+        when(mock2.executeUpdate()).thenReturn(1);
+        when(mock2.setParameter(anyInt(),any())).thenReturn(mock2);
         when(mock1.existById(anyString())).thenReturn(Boolean.TRUE);
         doReturn(Optional.empty()).when(reactionRepository).findReaction(anyString(), anyString(), any(ReferenceEnum.class), any(ReactionEnum.class));
-        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr(), null);
+        UserReaction.createOrUpdate(randomStr(), ReferenceEnum.COMMENT, ReactionEnum.LIKE, mock, reactionRepository, randomStr(), mock3);
     }
 
     @Test(expected = ReferenceNotFoundException.class)

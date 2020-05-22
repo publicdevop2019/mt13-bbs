@@ -93,11 +93,6 @@ public class UserReaction extends Auditable {
                 .setParameter(8, reaction.getModifiedBy())
                 .setParameter(9, b)
                 .executeUpdate();
-//        int i = entityManager.createNativeQuery("INSERT INTO user_reaction (id, reference_id, reference_type,reaction_type,created_at,created_by,modified_at,modified_by) " +
-//                "SELECT " + reaction.getId() + ", " + reaction.getReferenceId() + ", '" + reaction.getReferenceType().name() + "', '" + a + "'," +
-//                timestamp.toString() + ",'" + reaction.getCreatedBy() + "'," + timestamp2.toString() + ",'" + reaction.getModifiedBy() + "' FROM user_reaction ur " +
-//                "WHERE (ur.reference_id = " + reaction.getReferenceId() + " AND ur.reference_type = '" + reaction.getReferenceType().name() + "' AND ur.reaction_type = '" + b + "') HAVING COUNT(*) = 0")
-//                .executeUpdate();
         if (i == 1)
             return reaction;
         else
