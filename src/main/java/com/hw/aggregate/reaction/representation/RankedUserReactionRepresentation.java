@@ -1,5 +1,6 @@
 package com.hw.aggregate.reaction.representation;
 
+import com.hw.aggregate.reaction.model.RankedUserReaction;
 import lombok.Data;
 
 import java.util.List;

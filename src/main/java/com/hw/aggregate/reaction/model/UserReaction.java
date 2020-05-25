@@ -1,18 +1,12 @@
 package com.hw.aggregate.reaction.model;
 
-import com.hw.aggregate.post.exception.PostUnsupportedSortOrderException;
-import com.hw.aggregate.post.model.PostSortCriteriaEnum;
-import com.hw.aggregate.post.model.PostSortOrderEnum;
 import com.hw.aggregate.reaction.ReactionRepository;
 import com.hw.aggregate.reaction.exception.*;
-import com.hw.aggregate.reaction.representation.RankedUserReaction;
 import com.hw.aggregate.reaction.representation.RankedUserReactionRepresentation;
 import com.hw.shared.Auditable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 
 import javax.persistence.*;
 import java.math.BigInteger;

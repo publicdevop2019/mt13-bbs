@@ -1,4 +1,4 @@
-package com.hw.aggregate.reaction.representation;
+package com.hw.aggregate.reaction.model;
 
 import com.hw.aggregate.reaction.model.ReferenceEnum;
 import lombok.Data;
