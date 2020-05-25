@@ -8,6 +8,7 @@ import com.hw.aggregate.comment.model.Comment;
 import com.hw.aggregate.comment.model.CommentSortCriteriaEnum;
 import com.hw.aggregate.comment.model.CommentSortOrderEnum;
 import com.hw.aggregate.comment.representation.CommentCountPublicRepresentation;
+import com.hw.aggregate.comment.representation.CommentSummaryAdminRepresentation;
 import com.hw.aggregate.comment.representation.CommentSummaryPrivateRepresentation;
 import com.hw.aggregate.comment.representation.CommentSummaryPublicRepresentation;
 import com.hw.aggregate.post.PostApplicationService;
@@ -50,10 +51,10 @@ public class CommentApplicationService implements ReferenceService {
     }
 
     @Transactional(readOnly = true)
-    public CommentSummaryPrivateRepresentation getAllCommentsForAdmin(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+    public CommentSummaryAdminRepresentation getAllCommentsForAdmin(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Comment> commentsForUser = commentRepository.findAll(pageRequest);
-        return new CommentSummaryPrivateRepresentation(commentsForUser.getContent());
+        return new CommentSummaryAdminRepresentation(commentsForUser.getContent());
     }
 
     //private any user
