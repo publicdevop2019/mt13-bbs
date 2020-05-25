@@ -1,6 +1,7 @@
 package com.hw.aggregate.comment;
 
 import com.hw.aggregate.comment.command.CreateCommentCommand;
+import com.hw.aggregate.comment.command.DeleteCommentAdminCommand;
 import com.hw.aggregate.comment.command.DeleteCommentCommand;
 import com.hw.aggregate.comment.exception.CommentUnsupportedSortOrderException;
 import com.hw.aggregate.comment.model.Comment;
@@ -48,6 +49,13 @@ public class CommentApplicationService implements ReferenceService {
         return new CommentSummaryPrivateRepresentation(commentsForUser.getContent());
     }
 
+    @Transactional(readOnly = true)
+    public CommentSummaryPrivateRepresentation getAllCommentsForAdmin(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
+        Page<Comment> commentsForUser = commentRepository.findAll(pageRequest);
+        return new CommentSummaryPrivateRepresentation(commentsForUser.getContent());
+    }
+
     //private any user
     @Transactional
     public void addCommentToPost(String postId, CreateCommentCommand command) {
@@ -58,6 +66,11 @@ public class CommentApplicationService implements ReferenceService {
     @Transactional
     public void deleteComment(DeleteCommentCommand command) {
         Comment.delete(command.getCommentId(), command.getUserId(), commentRepository);
+    }
+
+    @Transactional
+    public void deleteCommentForAdmin(DeleteCommentAdminCommand command) {
+        Comment.deleteForAdmin(command.getCommentId(), commentRepository);
     }
 
     // public

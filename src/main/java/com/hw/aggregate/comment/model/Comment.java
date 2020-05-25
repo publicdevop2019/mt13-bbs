@@ -50,4 +50,11 @@ public class Comment extends Auditable {
             throw new CommentAccessException();
         commentRepository.delete(byId.get());
     }
+
+    public static void deleteForAdmin(String commentId, CommentRepository commentRepository) {
+        Optional<Comment> byId = commentRepository.findById(Long.parseLong(commentId));
+        if (byId.isEmpty())
+            throw new CommentNotFoundException();
+        commentRepository.delete(byId.get());
+    }
 }

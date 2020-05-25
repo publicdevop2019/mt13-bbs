@@ -54,6 +54,13 @@ public class Post extends Auditable {
         postRepository.delete(byId.get());
     }
 
+    public static void deleteForAdmin(String postId, PostRepository postRepository) {
+        Optional<Post> byId = postRepository.findById(Long.parseLong(postId));
+        if (byId.isEmpty())
+            throw new PostNotFoundException();
+        postRepository.delete(byId.get());
+    }
+
     public static Post read(String postId, PostRepository postRepository) {
         Optional<Post> byId = postRepository.findById(Long.parseLong(postId));
         if (byId.isEmpty())

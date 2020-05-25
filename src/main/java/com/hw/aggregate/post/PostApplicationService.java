@@ -2,6 +2,7 @@ package com.hw.aggregate.post;
 
 import com.hw.aggregate.comment.CommentApplicationService;
 import com.hw.aggregate.post.command.CreatePostCommand;
+import com.hw.aggregate.post.command.DeletePostAdminCommand;
 import com.hw.aggregate.post.command.DeletePostCommand;
 import com.hw.aggregate.post.command.UpdatePostCommand;
 import com.hw.aggregate.post.exception.PostUnsupportedSortOrderException;
@@ -38,6 +39,15 @@ public class PostApplicationService implements ReferenceService {
     public PostCardSummaryRepresentation getByTopic(String topic, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Post> postsByTopic = postRepository.findPostsByTopic(topic, pageRequest);
+        List<PostCardSummaryRepresentation.PostCard> collect = postsByTopic.get().map(e -> new PostCardSummaryRepresentation.PostCard(e, commentApplicationService.countCommentForPost(e.getId().toString()).getCount())).collect(Collectors.toList());
+        return new PostCardSummaryRepresentation(collect);
+    }
+
+    //public
+    @Transactional(readOnly = true)
+    public PostCardSummaryRepresentation getAll(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+        PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
+        Page<Post> postsByTopic = postRepository.findAll(pageRequest);
         List<PostCardSummaryRepresentation.PostCard> collect = postsByTopic.get().map(e -> new PostCardSummaryRepresentation.PostCard(e, commentApplicationService.countCommentForPost(e.getId().toString()).getCount())).collect(Collectors.toList());
         return new PostCardSummaryRepresentation(collect);
     }
@@ -84,6 +94,14 @@ public class PostApplicationService implements ReferenceService {
     @Transactional
     public void deletePost(DeletePostCommand command) {
         Post.delete(command.getPostId(), command.getUserId(), postRepository);
+        commentApplicationService.purgeComments(command.getPostId());
+        reactionApplicationService.purgeReactions(command.getPostId());
+    }
+
+    //private owner only
+    @Transactional
+    public void deletePostForAdmin(DeletePostAdminCommand command) {
+        Post.deleteForAdmin(command.getPostId(), postRepository);
         commentApplicationService.purgeComments(command.getPostId());
         reactionApplicationService.purgeReactions(command.getPostId());
     }

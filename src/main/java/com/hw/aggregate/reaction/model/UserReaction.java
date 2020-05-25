@@ -1,18 +1,23 @@
 package com.hw.aggregate.reaction.model;
 
+import com.hw.aggregate.post.exception.PostUnsupportedSortOrderException;
+import com.hw.aggregate.post.model.PostSortCriteriaEnum;
+import com.hw.aggregate.post.model.PostSortOrderEnum;
 import com.hw.aggregate.reaction.ReactionRepository;
 import com.hw.aggregate.reaction.exception.*;
+import com.hw.aggregate.reaction.representation.RankedUserReaction;
+import com.hw.aggregate.reaction.representation.RankedUserReactionRepresentation;
 import com.hw.shared.Auditable;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.util.Date;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Entity
 @Table(uniqueConstraints =
@@ -129,5 +134,19 @@ public class UserReaction extends Auditable {
             throw new ReactionNotFoundException();
         }
         reactionRepository.delete(reaction.get());
+    }
+
+    public static RankedUserReactionRepresentation findType(ReactionEnum reaction, Integer pageNumber, Integer pageSize, SortOrderEnum sortOrder, EntityManager entityManager) {
+        List<Object[]> resultList = entityManager.createNativeQuery("SELECT COUNT( reference_id ), reference_id,reference_type" +
+                " FROM user_reaction ur WHERE ur.reaction_type = ?1  GROUP BY ur.reference_id , ur.reference_type ORDER BY COUNT( reference_id ) " + sortOrder.name() + " LIMIT ?2, ?3 ")
+                .setParameter(1, reaction.name())
+                .setParameter(2, pageNumber * pageSize)
+                .setParameter(3, pageSize)
+                .getResultList();
+        List<RankedUserReaction> rankedUserReactions = new ArrayList<>(resultList.size());
+        for (Object[] row : resultList) {
+            rankedUserReactions.add(new RankedUserReaction(((BigInteger) row[0]).longValue(), (String) row[1], (ReferenceEnum.valueOf((String) row[2]))));
+        }
+        return new RankedUserReactionRepresentation(rankedUserReactions);
     }
 }

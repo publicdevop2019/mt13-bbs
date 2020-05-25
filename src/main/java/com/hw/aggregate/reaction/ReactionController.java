@@ -1,6 +1,7 @@
 package com.hw.aggregate.reaction;
 
 import com.hw.aggregate.reaction.command.*;
+import com.hw.aggregate.reaction.model.SortOrderEnum;
 import com.hw.shared.ServiceUtility;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,5 +110,33 @@ public class ReactionController {
     public ResponseEntity<?> removeNotInterestedComment(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
         reactionApplicationService.removeReaction(new RemoveNotInterestedCommentCommand(ServiceUtility.getUserId(authorization), commentId));
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("admin/likes")
+    public ResponseEntity<?> getLikesForAdmin(@RequestParam("pageNum") Integer pageNumber,
+                                              @RequestParam("pageSize") Integer pageSize,
+                                              @RequestParam("sortOrder") SortOrderEnum sortOrder) {
+        return ResponseEntity.ok(reactionApplicationService.getLikes(pageNumber, pageSize, sortOrder));
+    }
+
+    @GetMapping("admin/dislikes")
+    public ResponseEntity<?> getDisLikesForAdmin(@RequestParam("pageNum") Integer pageNumber,
+                                                 @RequestParam("pageSize") Integer pageSize,
+                                                 @RequestParam("sortOrder") SortOrderEnum sortOrder) {
+        return ResponseEntity.ok(reactionApplicationService.getDislikes(pageNumber, pageSize, sortOrder));
+    }
+
+    @GetMapping("admin/reports")
+    public ResponseEntity<?> getReportsForAdmin(@RequestParam("pageNum") Integer pageNumber,
+                                                @RequestParam("pageSize") Integer pageSize,
+                                                @RequestParam("sortOrder") SortOrderEnum sortOrder) {
+        return ResponseEntity.ok(reactionApplicationService.getReports(pageNumber, pageSize, sortOrder));
+    }
+
+    @GetMapping("admin/notInterested")
+    public ResponseEntity<?> getNotInterestedForAdmin(@RequestParam("pageNum") Integer pageNumber,
+                                                      @RequestParam("pageSize") Integer pageSize,
+                                                      @RequestParam("sortOrder") SortOrderEnum sortOrder) {
+        return ResponseEntity.ok(reactionApplicationService.getNotInterested(pageNumber, pageSize, sortOrder));
     }
 }

@@ -1,6 +1,7 @@
 package com.hw.aggregate.comment;
 
 import com.hw.aggregate.comment.command.CreateCommentCommand;
+import com.hw.aggregate.comment.command.DeleteCommentAdminCommand;
 import com.hw.aggregate.comment.command.DeleteCommentCommand;
 import com.hw.aggregate.comment.representation.CommentSummaryPrivateRepresentation;
 import com.hw.aggregate.comment.representation.CommentSummaryPublicRepresentation;
@@ -29,6 +30,15 @@ public class CommentController {
         return ResponseEntity.ok(allCommentsForUser.getCommentList());
     }
 
+    @GetMapping("admin/comments")
+    public ResponseEntity<?> getAllCommentsForAdmin(@RequestParam("pageNum") Integer pageNumber,
+                                                    @RequestParam("pageSize") Integer pageSize, @RequestParam("sortBy") String sortBy,
+                                                    @RequestParam("sortOrder") String sortOrder) {
+        CommentSummaryPrivateRepresentation allCommentsForUser =
+                commentApplicationService.getAllCommentsForAdmin(pageNumber, pageSize, sortBy, sortOrder);
+        return ResponseEntity.ok(allCommentsForUser.getCommentList());
+    }
+
     @GetMapping("public/posts/{postId}/comments")
     public ResponseEntity<?> getAllCommentsForPost(@PathVariable(name = "postId") String postId, @RequestParam("pageNum") Integer pageNumber,
                                                    @RequestParam("pageSize") Integer pageSize, @RequestParam("sortBy") String sortBy,
@@ -47,6 +57,12 @@ public class CommentController {
     @DeleteMapping("private/comments/{commentId}")
     public ResponseEntity<?> deleteCommentFromPost(@RequestHeader("authorization") String authorization, @PathVariable(name = "commentId") String commentId) {
         commentApplicationService.deleteComment(new DeleteCommentCommand(ServiceUtility.getUserId(authorization), commentId));
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("admin/comments/{commentId}")
+    public ResponseEntity<?> deleteCommentFromPostForAdmin(@PathVariable(name = "commentId") String commentId) {
+        commentApplicationService.deleteCommentForAdmin(new DeleteCommentAdminCommand(commentId));
         return ResponseEntity.ok().build();
     }
 }

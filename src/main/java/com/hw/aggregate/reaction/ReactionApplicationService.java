@@ -3,6 +3,7 @@ package com.hw.aggregate.reaction;
 import com.hw.aggregate.comment.CommentApplicationService;
 import com.hw.aggregate.post.PostApplicationService;
 import com.hw.aggregate.reaction.model.*;
+import com.hw.aggregate.reaction.representation.RankedUserReactionRepresentation;
 import com.hw.aggregate.reaction.representation.ReactionCountRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -67,5 +68,25 @@ public class ReactionApplicationService {
     @Transactional
     public void purgeReactions(String refId) {
         reactionRepository.purgeReactionForReference(refId);
+    }
+
+    @Transactional(readOnly = true)
+    public RankedUserReactionRepresentation getLikes(Integer pageNumber, Integer pageSize, SortOrderEnum sortOrder) {
+        return UserReaction.findType(ReactionEnum.LIKE, pageNumber, pageSize, sortOrder,entityManager);
+    }
+
+    @Transactional(readOnly = true)
+    public RankedUserReactionRepresentation getDislikes(Integer pageNumber, Integer pageSize, SortOrderEnum sortOrder) {
+        return UserReaction.findType(ReactionEnum.DISLIKE, pageNumber, pageSize, sortOrder,entityManager);
+    }
+
+    @Transactional(readOnly = true)
+    public RankedUserReactionRepresentation getReports(Integer pageNumber, Integer pageSize, SortOrderEnum sortOrder) {
+        return UserReaction.findType(ReactionEnum.REPORT, pageNumber, pageSize, sortOrder,entityManager);
+    }
+
+    @Transactional(readOnly = true)
+    public RankedUserReactionRepresentation getNotInterested(Integer pageNumber, Integer pageSize, SortOrderEnum sortOrder) {
+        return UserReaction.findType(ReactionEnum.NOT_INTERESTED, pageNumber, pageSize, sortOrder,entityManager);
     }
 }
