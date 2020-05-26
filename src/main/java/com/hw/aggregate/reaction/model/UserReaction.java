@@ -141,6 +141,10 @@ public class UserReaction extends Auditable {
         for (Object[] row : resultList) {
             rankedUserReactions.add(new RankedUserReaction(((BigInteger) row[0]).longValue(), (String) row[1], (ReferenceEnum.valueOf((String) row[2]))));
         }
-        return new RankedUserReactionRepresentation(rankedUserReactions);
+        List resultList1 = entityManager.createNativeQuery("SELECT COUNT(DISTINCT reference_id , reference_type)  FROM user_reaction ur WHERE ur.reaction_type = ?1")
+                .setParameter(1, reaction.name())
+                .getResultList();
+        BigInteger o = (BigInteger) resultList1.get(0);
+        return new RankedUserReactionRepresentation(rankedUserReactions, o.longValue());
     }
 }
