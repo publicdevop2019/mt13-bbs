@@ -28,7 +28,7 @@ public class PostController {
     public ResponseEntity<?> getAllPostForAdmin(@RequestParam("pageNum") Integer pageNumber,
                                                 @RequestParam("pageSize") Integer pageSize, @RequestParam("sortBy") String sortBy,
                                                 @RequestParam("sortOrder") String sortOrder) {
-        return ResponseEntity.ok(postApplicationService.getAll(pageNumber, pageSize, sortBy, sortOrder).getPostCardList());
+        return ResponseEntity.ok(postApplicationService.getAll(pageNumber, pageSize, sortBy, sortOrder));
     }
 
     @GetMapping("private/posts")

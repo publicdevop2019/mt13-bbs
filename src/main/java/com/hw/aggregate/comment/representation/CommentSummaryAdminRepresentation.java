@@ -5,18 +5,19 @@ import lombok.Data;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 public class CommentSummaryAdminRepresentation {
-    private List<CommentAdminCard> commentList;
+    private List<CommentAdminCard> results;
+    private Long total;
 
-    public CommentSummaryAdminRepresentation(List<Comment> postList) {
-        this.commentList = postList.stream().map(CommentAdminCard::new).collect(Collectors.toList());
+    public CommentSummaryAdminRepresentation(List<CommentAdminCard> results, Long total) {
+        this.results = results;
+        this.total = total;
     }
 
     @Data
-    private class CommentAdminCard {
+    public static class CommentAdminCard {
         private Long id;
         private String content;
         private Date publishedAt;

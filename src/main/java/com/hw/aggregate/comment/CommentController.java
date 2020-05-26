@@ -3,7 +3,6 @@ package com.hw.aggregate.comment;
 import com.hw.aggregate.comment.command.CreateCommentCommand;
 import com.hw.aggregate.comment.command.DeleteCommentAdminCommand;
 import com.hw.aggregate.comment.command.DeleteCommentCommand;
-import com.hw.aggregate.comment.representation.CommentSummaryAdminRepresentation;
 import com.hw.aggregate.comment.representation.CommentSummaryPrivateRepresentation;
 import com.hw.aggregate.comment.representation.CommentSummaryPublicRepresentation;
 import com.hw.shared.ServiceUtility;
@@ -35,8 +34,7 @@ public class CommentController {
     public ResponseEntity<?> getAllCommentsForAdmin(@RequestParam("pageNum") Integer pageNumber,
                                                     @RequestParam("pageSize") Integer pageSize, @RequestParam("sortBy") String sortBy,
                                                     @RequestParam("sortOrder") String sortOrder) {
-        CommentSummaryAdminRepresentation allCommentsForUser = commentApplicationService.getAllCommentsForAdmin(pageNumber, pageSize, sortBy, sortOrder);
-        return ResponseEntity.ok(allCommentsForUser.getCommentList());
+        return ResponseEntity.ok(commentApplicationService.getAllCommentsForAdmin(pageNumber, pageSize, sortBy, sortOrder));
     }
 
     @GetMapping("public/posts/{postId}/comments")

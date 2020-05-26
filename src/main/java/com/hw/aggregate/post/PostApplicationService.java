@@ -9,6 +9,7 @@ import com.hw.aggregate.post.exception.PostUnsupportedSortOrderException;
 import com.hw.aggregate.post.model.Post;
 import com.hw.aggregate.post.model.PostSortCriteriaEnum;
 import com.hw.aggregate.post.model.PostSortOrderEnum;
+import com.hw.aggregate.post.representation.PostCardSummaryAdminRepresentation;
 import com.hw.aggregate.post.representation.PostCardSummaryRepresentation;
 import com.hw.aggregate.post.representation.PostCreateRepresentation;
 import com.hw.aggregate.post.representation.PostDetailRepresentation;
@@ -45,11 +46,11 @@ public class PostApplicationService implements ReferenceService {
 
     //public
     @Transactional(readOnly = true)
-    public PostCardSummaryRepresentation getAll(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+    public PostCardSummaryAdminRepresentation getAll(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Post> postsByTopic = postRepository.findAll(pageRequest);
         List<PostCardSummaryRepresentation.PostCard> collect = postsByTopic.get().map(e -> new PostCardSummaryRepresentation.PostCard(e, commentApplicationService.countCommentForPost(e.getId().toString()).getCount())).collect(Collectors.toList());
-        return new PostCardSummaryRepresentation(collect);
+        return new PostCardSummaryAdminRepresentation(collect, postsByTopic.getTotalElements());
     }
 
     //private any user

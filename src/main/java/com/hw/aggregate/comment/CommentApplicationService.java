@@ -54,7 +54,8 @@ public class CommentApplicationService implements ReferenceService {
     public CommentSummaryAdminRepresentation getAllCommentsForAdmin(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
         PageRequest pageRequest = getPageRequest(pageNumber, pageSize, sortBy, sortOrder);
         Page<Comment> commentsForUser = commentRepository.findAll(pageRequest);
-        return new CommentSummaryAdminRepresentation(commentsForUser.getContent());
+        List<CommentSummaryAdminRepresentation.CommentAdminCard> collect = commentsForUser.get().map(CommentSummaryAdminRepresentation.CommentAdminCard::new).collect(Collectors.toList());
+        return new CommentSummaryAdminRepresentation(collect, commentsForUser.getTotalElements());
     }
 
     //private any user
