@@ -4,6 +4,7 @@ import com.hw.aggregate.reaction.ReactionRepository;
 import com.hw.aggregate.reaction.exception.*;
 import com.hw.aggregate.reaction.representation.RankedUserReactionRepresentation;
 import com.hw.shared.Auditable;
+import com.hw.shared.IdGenerator;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +17,11 @@ import java.util.*;
 @Entity
 @Table(uniqueConstraints =
 @UniqueConstraint(columnNames = {"referenceType", "referenceId", "createdBy", "reactionType"}))
-@SequenceGenerator(name = "likeId_gen", sequenceName = "likeId_gen", initialValue = 100)
 @Data
 @NoArgsConstructor
 @Slf4j
 public class UserReaction extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "likeId_gen")
     private Long id;
 
     @Column(length = 100)
@@ -36,14 +35,14 @@ public class UserReaction extends Auditable {
     @Convert(converter = ReactionEnum.DBConverter.class)
     private ReactionEnum reactionType;
 
-
     public static UserReaction createOrUpdate(String refId,
                                               ReferenceEnum refEnum,
                                               ReactionEnum reactionEnum,
                                               Map<ReferenceEnum, ReferenceService> refServices,
                                               ReactionRepository reactionRepository,
                                               String userId,
-                                              EntityManager entityManager
+                                              EntityManager entityManager,
+                                              IdGenerator idGenerator
     ) {
         if (refId == null || refEnum == null || reactionEnum == null || refServices == null || reactionRepository == null || userId == null)
             throw new FieldValidationException();
@@ -59,7 +58,7 @@ public class UserReaction extends Auditable {
                 stored.get().setReactionType(ReactionEnum.LIKE);
                 return reactionRepository.save(stored.get());
             } else {
-                return insertAIfBNotExistConcurrent(ReactionEnum.LIKE.name(), ReactionEnum.DISLIKE.name(), entityManager, new UserReaction(userId, new Random().nextLong(), refId, refEnum, reactionEnum));
+                return insertAIfBNotExistConcurrent(ReactionEnum.LIKE.name(), ReactionEnum.DISLIKE.name(), entityManager, new UserReaction(userId, idGenerator.getId(), refId, refEnum, reactionEnum));
             }
         } else if (reactionEnum.equals(ReactionEnum.DISLIKE)) {
             log.info("update like to dislike if exist");
@@ -68,12 +67,12 @@ public class UserReaction extends Auditable {
                 reaction.get().setReactionType(ReactionEnum.DISLIKE);
                 return reactionRepository.save(reaction.get());
             } else {
-                return insertAIfBNotExistConcurrent(ReactionEnum.DISLIKE.name(), ReactionEnum.LIKE.name(), entityManager, new UserReaction(userId, new Random().nextLong(), refId, refEnum, reactionEnum));
+                return insertAIfBNotExistConcurrent(ReactionEnum.DISLIKE.name(), ReactionEnum.LIKE.name(), entityManager, new UserReaction(userId, idGenerator.getId(), refId, refEnum, reactionEnum));
             }
         } else if (reactionEnum.equals(ReactionEnum.NOT_INTERESTED)) {
-            return reactionRepository.save(new UserReaction(refId, refEnum, reactionEnum));
+            return reactionRepository.save(new UserReaction(idGenerator.getId(), refId, refEnum, reactionEnum));
         } else if (reactionEnum.equals(ReactionEnum.REPORT)) {
-            return reactionRepository.save(new UserReaction(refId, refEnum, reactionEnum));
+            return reactionRepository.save(new UserReaction(idGenerator.getId(), refId, refEnum, reactionEnum));
         } else {
             throw new ReactionTypeNotFoundException();
         }
@@ -115,7 +114,8 @@ public class UserReaction extends Auditable {
 
     }
 
-    private UserReaction(String referenceId, ReferenceEnum referenceType, ReactionEnum reactionEnum) {
+    private UserReaction(Long id, String referenceId, ReferenceEnum referenceType, ReactionEnum reactionEnum) {
+        this.id = id;
         this.referenceId = referenceId;
         this.referenceType = referenceType;
         this.reactionType = reactionEnum;

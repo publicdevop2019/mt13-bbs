@@ -5,6 +5,7 @@ import com.hw.aggregate.post.PostApplicationService;
 import com.hw.aggregate.reaction.model.*;
 import com.hw.aggregate.reaction.representation.RankedUserReactionRepresentation;
 import com.hw.aggregate.reaction.representation.ReactionCountRepresentation;
+import com.hw.shared.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,8 @@ import java.util.Map;
 public class ReactionApplicationService {
     @Autowired
     private EntityManager entityManager;
+    @Autowired
+    private IdGenerator idGenerator;
     private Map<ReferenceEnum, ReferenceService> refServices;
 
     @Autowired
@@ -57,7 +60,7 @@ public class ReactionApplicationService {
 
     @Transactional
     public void addReaction(CommonReaction cmd) {
-        UserReaction.createOrUpdate(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices, reactionRepository, cmd.getUserId(), entityManager);
+        UserReaction.createOrUpdate(cmd.getRefId(), cmd.getReferenceEnum(), cmd.getReactionEnum(), refServices, reactionRepository, cmd.getUserId(), entityManager, idGenerator);
     }
 
     @Transactional
@@ -72,21 +75,21 @@ public class ReactionApplicationService {
 
     @Transactional(readOnly = true)
     public RankedUserReactionRepresentation getLikes(Integer pageNumber, Integer pageSize, SortOrderEnum sortOrder) {
-        return UserReaction.findType(ReactionEnum.LIKE, pageNumber, pageSize, sortOrder,entityManager);
+        return UserReaction.findType(ReactionEnum.LIKE, pageNumber, pageSize, sortOrder, entityManager);
     }
 
     @Transactional(readOnly = true)
     public RankedUserReactionRepresentation getDislikes(Integer pageNumber, Integer pageSize, SortOrderEnum sortOrder) {
-        return UserReaction.findType(ReactionEnum.DISLIKE, pageNumber, pageSize, sortOrder,entityManager);
+        return UserReaction.findType(ReactionEnum.DISLIKE, pageNumber, pageSize, sortOrder, entityManager);
     }
 
     @Transactional(readOnly = true)
     public RankedUserReactionRepresentation getReports(Integer pageNumber, Integer pageSize, SortOrderEnum sortOrder) {
-        return UserReaction.findType(ReactionEnum.REPORT, pageNumber, pageSize, sortOrder,entityManager);
+        return UserReaction.findType(ReactionEnum.REPORT, pageNumber, pageSize, sortOrder, entityManager);
     }
 
     @Transactional(readOnly = true)
     public RankedUserReactionRepresentation getNotInterested(Integer pageNumber, Integer pageSize, SortOrderEnum sortOrder) {
-        return UserReaction.findType(ReactionEnum.NOT_INTERESTED, pageNumber, pageSize, sortOrder,entityManager);
+        return UserReaction.findType(ReactionEnum.NOT_INTERESTED, pageNumber, pageSize, sortOrder, entityManager);
     }
 }

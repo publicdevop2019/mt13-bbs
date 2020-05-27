@@ -14,6 +14,7 @@ import com.hw.aggregate.comment.representation.CommentSummaryPublicRepresentatio
 import com.hw.aggregate.post.PostApplicationService;
 import com.hw.aggregate.reaction.ReactionApplicationService;
 import com.hw.aggregate.reaction.model.ReferenceService;
+import com.hw.shared.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -29,7 +30,8 @@ import java.util.stream.Collectors;
 public class CommentApplicationService implements ReferenceService {
     @Autowired
     private CommentRepository commentRepository;
-
+    @Autowired
+    private IdGenerator idGenerator;
     private List<ReferenceService> refServices;
 
     @Autowired
@@ -61,7 +63,7 @@ public class CommentApplicationService implements ReferenceService {
     //private any user
     @Transactional
     public void addCommentToPost(String postId, CreateCommentCommand command) {
-        Comment.create(command.getContent(), command.getReplyTo(), postId, refServices, commentRepository);
+        Comment.create(command.getContent(), command.getReplyTo(), postId, refServices, commentRepository, idGenerator);
     }
 
     //private owner only

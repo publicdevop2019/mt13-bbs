@@ -5,6 +5,7 @@ import com.hw.aggregate.post.command.CreatePostCommand;
 import com.hw.aggregate.post.exception.PostAccessException;
 import com.hw.aggregate.post.exception.PostNotFoundException;
 import com.hw.shared.Auditable;
+import com.hw.shared.IdGenerator;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -13,12 +14,10 @@ import java.util.Optional;
 
 @Entity
 @Table
-@SequenceGenerator(name = "postId_gen", sequenceName = "postId_gen", initialValue = 100)
 @Data
 @NoArgsConstructor
 public class Post extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO, generator = "postId_gen")
     private Long id;
     @Column
     private String title;
@@ -33,11 +32,12 @@ public class Post extends Auditable {
     @Version
     private Integer version;
 
-    public static Post create(CreatePostCommand command, PostRepository postRepository) {
-        return postRepository.save(new Post(command.getTitle(), command.getTopic(), command.getContent()));
+    public static Post create(CreatePostCommand command, PostRepository postRepository, IdGenerator idGenerator) {
+        return postRepository.save(new Post(idGenerator.getId(), command.getTitle(), command.getTopic(), command.getContent()));
     }
 
-    private Post(String title, String topic, String content) {
+    private Post(Long id, String title, String topic, String content) {
+        this.id = id;
         this.title = title;
         this.topic = topic;
         this.content = content;

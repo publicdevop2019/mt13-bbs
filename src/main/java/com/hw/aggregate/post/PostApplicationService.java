@@ -16,6 +16,7 @@ import com.hw.aggregate.post.representation.PostDetailRepresentation;
 import com.hw.aggregate.reaction.ReactionApplicationService;
 import com.hw.aggregate.reaction.model.ReferenceService;
 import com.hw.aggregate.reaction.representation.ReactionCountRepresentation;
+import com.hw.shared.IdGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -34,6 +35,8 @@ public class PostApplicationService implements ReferenceService {
     private CommentApplicationService commentApplicationService;
     @Autowired
     private ReactionApplicationService reactionApplicationService;
+    @Autowired
+    private IdGenerator idGenerator;
 
     //public
     @Transactional(readOnly = true)
@@ -65,7 +68,7 @@ public class PostApplicationService implements ReferenceService {
     //private any user
     @Transactional
     public PostCreateRepresentation createPost(CreatePostCommand command) {
-        return new PostCreateRepresentation(Post.create(command, postRepository));
+        return new PostCreateRepresentation(Post.create(command, postRepository, idGenerator));
     }
 
     //public
